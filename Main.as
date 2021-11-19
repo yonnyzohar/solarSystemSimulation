@@ -191,8 +191,8 @@
 			x: stage.stageWidth / 2,
 			y: stage.stageHeight / 2,
 			emitsLight: true,
-			lightRad: 1000,
-			lightAngleDelta: 0.01,
+			lightRad: 2000,
+			lightAngleDelta: 0.03,
 			orbitingPlanets: [
 				duplicate(mercury),
 				duplicate(venus),
@@ -225,7 +225,7 @@
 
 
 			populatePlanetsARrr(sun);
-			//populateBGStars();
+			populateBGStars();
 
 			
 			stage.addEventListener(Event.ENTER_FRAME, update);
