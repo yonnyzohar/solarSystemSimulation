@@ -192,7 +192,7 @@
 			y: stage.stageHeight / 2,
 			emitsLight: true,
 			lightRad: 2000,
-			lightAngleDelta: 0.03,
+			lightAngleDelta: 0.02,//0.03 is the smallest that still runs in normal fps
 			orbitingPlanets: [
 				duplicate(mercury),
 				duplicate(venus),
@@ -345,8 +345,15 @@
 					for (var l: Number = a.left; l <= a.right; l += planet.lightAngleDelta) {
 						var cos1: Number = Math.cos(l);
 						var sin1: Number = Math.sin(l);
-						g0.moveTo(planet.x + (cos1 * baseLen), planet.y + (sin1 * baseLen));
-						emitLight(planet.x, planet.y, cos1, sin1, Math.min(a.dist, planet.lightRad), planet.lightRad, planet.color);
+						var planetSurfaceX:Number = planet.x + (cos1 * baseLen);
+						var planetSurfaceY:Number = planet.y + (sin1 * baseLen);
+						
+						//if (isInScreen(planetSurfaceX, planetSurfaceY)) 
+						{
+							
+							emitLight(planetSurfaceX,planetSurfaceY, planet.x, planet.y, cos1, sin1, Math.min(a.dist, planet.lightRad), planet.lightRad, planet.color);
+					
+						}
 					}
 
 					smallest = a.right;
@@ -366,8 +373,16 @@
 					for (var ang: Number = a.left; ang < a.right; ang += planet.lightAngleDelta) {
 						var cos2: Number = Math.cos(ang);
 						var sin2: Number = Math.sin(ang);
-						g0.moveTo(planet.x + (cos2 * baseLen), planet.y + (sin2 * baseLen));
-						emitLight(planet.x, planet.y, cos2, sin2, planet.lightRad, planet.lightRad, planet.color);
+						var planetSurfaceX:Number = planet.x + (cos2 * baseLen);
+						var planetSurfaceY:Number = planet.y + (sin2 * baseLen);
+
+						//if (isInScreen(planetSurfaceX, planetSurfaceY)) 
+						{
+							
+							emitLight(planetSurfaceX,planetSurfaceY, planet.x, planet.y, cos2, sin2, planet.lightRad, planet.lightRad, planet.color);
+						}
+
+						
 					}
 				}
 			}
@@ -391,7 +406,9 @@
 			}
 		}
 
-		function emitLight(baseX: Number, baseY: Number, cos: Number, sin: Number, currentLightRad: Number, totalLightRad: Number, color: uint): void {
+		function emitLight(planetSurfaceX: Number, planetSurfaceY: Number , baseX: Number, baseY: Number, cos: Number, sin: Number, currentLightRad: Number, totalLightRad: Number, color: uint): void {
+			
+			g0.moveTo(planetSurfaceX, planetSurfaceY);
 			var sections: Number = 20;
 			var sectionLen: Number = totalLightRad / sections;
 			for (var i: Number = sectionLen; i < totalLightRad; i += sectionLen) {
@@ -406,10 +423,13 @@
 				}
 				var dpX: Number = baseX + (cos * i);
 				var dpY: Number = baseY + (sin * i);
-				//if (isInScreen(dpX, dpY)) 
+				
+				if (isInScreen(planetSurfaceX, planetSurfaceY) || isInScreen(dpX, dpY)) 
 				{
 					g0.lineStyle(0.1, color, per * 0.6);
 					g0.lineTo(dpX, dpY);
+					planetSurfaceX = dpX;
+					planetSurfaceY = dpY;
 
 				}
 
@@ -552,7 +572,7 @@
 			if (tweenTo != null) {
 
 				if (tweenTo.firstTime) {
-					 l = layers[1];
+					l = layers[1];
 					var dX: Number = ((tweenTo.x - l.x) / 2);
 					var dY: Number = ((tweenTo.y - l.y) / 2);
 
@@ -566,11 +586,12 @@
 						}
 					}
 
-					if (Math.abs(dX) < 0.1 && Math.abs(dY) < 0.1) {
-
+					if(getDistance(l.x, l.y, tweenTo.x, tweenTo.y) < 0.5)
+					{
 						setFollow(tweenTo.planet, false);
-
 					}
+
+	
 				} else {
 					var fX: Number = 0;
 					var fY: Number = 0;
