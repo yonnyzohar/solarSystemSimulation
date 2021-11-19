@@ -192,7 +192,7 @@
 			y: stage.stageHeight / 2,
 			emitsLight: true,
 			lightRad: 2000,
-			lightAngleDelta: 0.02,//0.03 is the smallest that still runs in normal fps
+			lightAngleDelta: 0.015,//0.03 is the smallest that still runs in normal fps
 			orbitingPlanets: [
 				duplicate(mercury),
 				duplicate(venus),
@@ -428,10 +428,11 @@
 				{
 					g0.lineStyle(0.1, color, per * 0.6);
 					g0.lineTo(dpX, dpY);
-					planetSurfaceX = dpX;
-					planetSurfaceY = dpY;
+					
 
 				}
+				planetSurfaceX = dpX;
+				planetSurfaceY = dpY;
 
 				if (surpassed) {
 					break;
@@ -544,7 +545,9 @@
 		function isInScreen(p1X: Number, p1Y: Number): Boolean {
 			var l: Sprite = layers[1];
 			var localPos: Point = l.localToGlobal(new Point(p1X, p1Y));
-			if (localPos.x > 0 && localPos.x < stage.stageWidth && localPos.y > 0 && localPos.y < stage.stageHeight) {
+			var w:Number = stage.stageWidth;
+			var h:Number = stage.stageHeight;
+			if (localPos.x > 0 && localPos.x < w && localPos.y > 0 && localPos.y < h) {
 				return true;
 			} else {
 				return false;
