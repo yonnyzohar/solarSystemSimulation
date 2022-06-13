@@ -1,13 +1,11 @@
-﻿package 
-{
+﻿package {
 	import flash.display.MovieClip;
 	import flash.geom.Point;
 	import flash.display.Sprite;
 	import flash.events.*;
 
-	public class Main extends MovieClip 
-	{
-		var showOrbit: Boolean = true;
+	public class Main extends MovieClip {
+		
 		var zoomAmount: Number = 0.05;
 		var currZoom: Number = 1;
 
@@ -22,6 +20,11 @@
 		var layer1: Sprite = new Sprite();
 		var debugLayer: Sprite = new Sprite();
 
+		var offsetX = 0;
+		var offsetY = 0;
+		var prevX = 0;
+		var prevY = 0;
+
 
 		var layers: Array = [layerS, layer0, layer05, layer1, debugLayer];
 
@@ -34,7 +37,20 @@
 		var allPlanets: Array = [];
 		var tweenTo: Object = null;
 
+		/*
+		Mercury - 0
+		Venus - 0
+		Earth - 1
+		Mars - 2
+		Jupiter - 79 (53 confirmed, 26 provisional)
+		Saturn - 82 (53 confirmed, 29 provisional)
+		Uranus - 27
+		Neptune - 14
+		
+		
+		*/
 
+		/*
 		var moon: Object = {
 			radius: 8,
 			color: 0xffffff * Math.random(),
@@ -101,35 +117,38 @@
 			speed: getSpeed(true),
 			name: "p456873"
 		}
+		*/
 
 
 		var mercury: Object = {
 			radius: 15,
 			color: 0xffffff * Math.random(),
-			distanceFromParent: 100,
+			distanceFromParent: 300,
 			angle: Math.random() * (Math.PI * 2),
 			speed: getSpeed(),
+			showOrbit : false,
 			name: "mercury"
 		}
 
 		var venus: Object = {
 			radius: 20,
 			color: 0xffffff * Math.random(),
-			distanceFromParent: 200,
+			distanceFromParent: 600,
 			angle: Math.random() * (Math.PI * 2),
 			speed: getSpeed(),
-			orbitingPlanets: [duplicate(moon), duplicate(marsMoon1), duplicate(marsMoon2)],
-
+			showOrbit : false,
 			name: "venus"
 		}
 
 		var earth: Object = {
 			radius: 22,
 			color: 0xffffff * Math.random(),
-			distanceFromParent: 320,
+			distanceFromParent: 1000,
 			angle: Math.random() * (Math.PI * 2),
 			speed: getSpeed(),
-			orbitingPlanets: [duplicate(moon)],
+			orbitingPlanets: [],
+			showOrbit : false,
+			numMoons: 1,
 			name: "earth"
 		}
 
@@ -137,70 +156,85 @@
 		var mars: Object = {
 			radius: 18,
 			color: 0xffffff * Math.random(),
-			distanceFromParent: 600,
+			distanceFromParent: 1500,
 			angle: Math.random() * (Math.PI * 2),
 			speed: getSpeed(),
-			orbitingPlanets: [
-				duplicate(marsMoon1),
-				duplicate(marsMoon2)
-			],
+			orbitingPlanets: [],
+			showOrbit : false,
+			numMoons: 2,
 			name: "mars"
 		}
 
 		var jupiter: Object = {
 			radius: 100,
 			color: 0xffffff * Math.random(),
-			distanceFromParent: 1000,
+			distanceFromParent: 2500,
 			angle: Math.random() * (Math.PI * 2),
 			speed: getSpeed(),
-			orbitingPlanets: [
-				duplicate(marsMoon1),
-				duplicate(marsMoon2),
-				duplicate(marsMoon3),
-				duplicate(marsMoon4),
-				duplicate(marsMoon5),
-				duplicate(marsMoon6)
-			],
+			orbitingPlanets: [],
+			showOrbit : false,
+			numMoons: 53,
 			name: "jupiter"
 		}
 
 		var saturn: Object = {
 			radius: 120,
 			color: 0xffffff * Math.random(),
-			distanceFromParent: 1500,
+			distanceFromParent: 5000,
 			angle: Math.random() * (Math.PI * 2),
 			speed: getSpeed(),
 			rings: [Math.random() * 0xffffff, Math.random() * 0xffffff, Math.random() * 0xffffff, Math.random() * 0xffffff, Math.random() * 0xffffff],
-			orbitingPlanets: [
-				duplicate(marsMoon1),
-				duplicate(marsMoon2),
-				duplicate(marsMoon3),
-				duplicate(marsMoon4),
-				duplicate(marsMoon5),
-				duplicate(marsMoon6)
-			],
+			orbitingPlanets: [],
+			showOrbit : false,
+			numMoons: 53,
 			name: "saturn"
 		}
 
+		var uranus: Object = {
+			radius: 18,
+			color: 0xffffff * Math.random(),
+			distanceFromParent: 6000,
+			angle: Math.random() * (Math.PI * 2),
+			speed: getSpeed(),
+			orbitingPlanets: [],
+			numMoons: 27,
+			showOrbit : false,
+			name: "uranus"
+		}
 
+		var neptune: Object = {
+			radius: 18,
+			color: 0xffffff * Math.random(),
+			distanceFromParent: 7000,
+			angle: Math.random() * (Math.PI * 2),
+			speed: getSpeed(),
+			orbitingPlanets: [],
+			showOrbit : false,
+			numMoons: 14,
+			name: "neptune"
+		}
 
 
 		var sun: Object = {
 			radius: 200,
 			color: 0xffff00,
-			x: stage.stageWidth / 2,
-			y: stage.stageHeight / 2,
+			x: stage.stageWidth/2,
+			y: stage.stageHeight/2,
 			emitsLight: true,
-			lightRad: 2000,
-			lightAngleDelta: 0.015,//0.03 is the smallest that still runs in normal fps
+			lightRad: 10000,
+			//lightAngleDelta: 0.015, //0.03 is the smallest that still runs in normal fps
+			
 			orbitingPlanets: [
 				duplicate(mercury),
 				duplicate(venus),
 				duplicate(earth),
 				duplicate(mars),
 				duplicate(jupiter),
-				duplicate(saturn)
+				duplicate(saturn),
+				duplicate(uranus),
+				duplicate(neptune)
 			],
+			/**/
 			name: "sun"
 		}
 
@@ -225,14 +259,40 @@
 
 
 			populatePlanetsARrr(sun);
+			addMoons();
 			populateBGStars();
 
-			
+
 			stage.addEventListener(Event.ENTER_FRAME, update);
 			stage.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
 			stage.addEventListener(MouseEvent.MOUSE_UP, onUp);
 			stage.addEventListener(MouseEvent.CLICK, onClick);
 			stage.addEventListener(MouseEvent.MOUSE_WHEEL, zooom);
+		}
+
+		function addMoons(): void {
+			for (var i: int = 0; i < allPlanets.length; i++) {
+				var planet: Object = allPlanets[i];
+				if (planet.numMoons) {
+					var dist:Number = 20;
+					for (var j: int = 0; j < planet.numMoons; j++) {
+						
+						var moon:Object = {
+							radius: (Math.random() * 10) + 1,
+							color: 0xffffff * Math.random(),
+							distanceFromParent: dist,
+							angle: Math.random() * (Math.PI * 2),
+							speed: getSpeed(true),
+							name: "moon"
+						}
+						
+						dist += (moon.radius * 2);
+						
+						planet.orbitingPlanets.push(moon);
+					}
+				}
+
+			}
 		}
 
 		function drawPlanet(planet: Object, parentObj: Object = null): void {
@@ -252,7 +312,7 @@
 				planet.angle += planet.speed;
 				planet.angle = fixAngle(planet.angle);
 
-				if (showOrbit) {
+				if (planet.showOrbit || parentObj.showOrbit) {
 					g05.lineStyle(0.1, 0xffffff, .5);
 					g05.drawCircle(parentObj.x, parentObj.y, planet.distanceFromParent + parentObj.radius);
 					g05.endFill();
@@ -260,24 +320,42 @@
 
 
 			}
-
-			g1.drawCircle(planet.x, planet.y, planet.radius); // Draw the circle, assigning it a x position, y position, raidius.
-			g1.endFill();
+			/**/
+			if (isInScreen(planet.x, planet.y) || 
+				isInScreen(planet.x + planet.radius, planet.y) ||
+				isInScreen(planet.x - planet.radius, planet.y) ||
+				isInScreen(planet.x , planet.y+ planet.radius) ||
+				isInScreen(planet.x , planet.y- planet.radius) 
+			
+			) 
+			{
+				g1.drawCircle(planet.x, planet.y, planet.radius); // Draw the circle, assigning it a x position, y position, raidius.
+				g1.endFill();
+			}
+			
 
 			var p: Object;
 			if (planet.orbitingPlanets) {
 				for (var i: int = 0; i < planet.orbitingPlanets.length; i++) {
-					 p = planet.orbitingPlanets[i];
+					p = planet.orbitingPlanets[i];
 					drawPlanet(p, planet);
 				}
 			}
 
 			if (planet.emitsLight) {
-				g0.lineStyle(0.1, planet.color, 0.4);
+				var lightLineThickness:Number = 2;
+				if(lightLineThickness < 1)
+				{
+					lightLineThickness = 1;
+				}
+				var lightAngleDelta:Number = (Math.PI * 2)/(360/2 );
+				
+				
+				g0.lineStyle(lightLineThickness, planet.color, 0.4);
 				var angles: Array = [];
 
 				for (var j: int = 0; j < allPlanets.length; j++) {
-					 p = allPlanets[j];
+					p = allPlanets[j];
 
 					if (p == planet) {
 						continue;
@@ -331,6 +409,7 @@
 				var smallest: Number = 0;
 				var biggest: Number = 0;
 				var a: Object;
+				
 				//first emit to all the planets
 				for (var h: int = 0; h < angles.length; h++) {
 					a = angles[h];
@@ -341,18 +420,20 @@
 						left: smallest,
 						right: biggest
 					});
+					
+					
 
-					for (var l: Number = a.left; l <= a.right; l += planet.lightAngleDelta) {
+					for (var l: Number = a.left; l <= a.right; l += lightAngleDelta) {
 						var cos1: Number = Math.cos(l);
 						var sin1: Number = Math.sin(l);
-						var planetSurfaceX:Number = planet.x + (cos1 * baseLen);
-						var planetSurfaceY:Number = planet.y + (sin1 * baseLen);
-						
+						var planetSurfaceX: Number = planet.x + (cos1 * baseLen);
+						var planetSurfaceY: Number = planet.y + (sin1 * baseLen);
+
 						//if (isInScreen(planetSurfaceX, planetSurfaceY)) 
 						{
-							
-							emitLight(planetSurfaceX,planetSurfaceY, planet.x, planet.y, cos1, sin1, Math.min(a.dist, planet.lightRad), planet.lightRad, planet.color);
-					
+
+							emitLight(lightLineThickness, planetSurfaceX, planetSurfaceY, planet.x, planet.y, cos1, sin1, Math.min(a.dist, planet.lightRad), planet.lightRad, planet.color);
+
 						}
 					}
 
@@ -370,19 +451,19 @@
 				//then emit to empty space
 				for (var k: int = 0; k < emptypSpaces.length; k++) {
 					a = emptypSpaces[k];
-					for (var ang: Number = a.left; ang < a.right; ang += planet.lightAngleDelta) {
+					for (var ang: Number = a.left; ang < a.right; ang += lightAngleDelta) {
 						var cos2: Number = Math.cos(ang);
 						var sin2: Number = Math.sin(ang);
-						var planetSurfaceX:Number = planet.x + (cos2 * baseLen);
-						var planetSurfaceY:Number = planet.y + (sin2 * baseLen);
+						var planetSurfaceX: Number = planet.x + (cos2 * baseLen);
+						var planetSurfaceY: Number = planet.y + (sin2 * baseLen);
 
 						//if (isInScreen(planetSurfaceX, planetSurfaceY)) 
 						{
-							
-							emitLight(planetSurfaceX,planetSurfaceY, planet.x, planet.y, cos2, sin2, planet.lightRad, planet.lightRad, planet.color);
+
+							emitLight(lightLineThickness, planetSurfaceX, planetSurfaceY, planet.x, planet.y, cos2, sin2, planet.lightRad, planet.lightRad, planet.color);
 						}
 
-						
+
 					}
 				}
 			}
@@ -406,8 +487,8 @@
 			}
 		}
 
-		function emitLight(planetSurfaceX: Number, planetSurfaceY: Number , baseX: Number, baseY: Number, cos: Number, sin: Number, currentLightRad: Number, totalLightRad: Number, color: uint): void {
-			
+		function emitLight(lightLineThickness:Number, planetSurfaceX: Number, planetSurfaceY: Number, baseX: Number, baseY: Number, cos: Number, sin: Number, currentLightRad: Number, totalLightRad: Number, color: uint): void {
+
 			g0.moveTo(planetSurfaceX, planetSurfaceY);
 			var sections: Number = 20;
 			var sectionLen: Number = totalLightRad / sections;
@@ -421,14 +502,13 @@
 				if (per * 0.6 <= 0) {
 					break;
 				}
-				var dpX: Number = baseX + (cos * i);
-				var dpY: Number = baseY + (sin * i);
-				
-				if (isInScreen(planetSurfaceX, planetSurfaceY) || isInScreen(dpX, dpY)) 
-				{
-					g0.lineStyle(0.1, color, per * 0.6);
+				var dpX: Number = baseX + (cos * (i+lightLineThickness));
+				var dpY: Number = baseY + (sin * (i+lightLineThickness));
+
+				if (isInScreen(planetSurfaceX, planetSurfaceY) || isInScreen(dpX, dpY)) {
+					g0.lineStyle(lightLineThickness, color, per * 0.6);
 					g0.lineTo(dpX, dpY);
-					
+
 
 				}
 				planetSurfaceX = dpX;
@@ -521,7 +601,7 @@
 			return angle;
 		}
 
-		function drawCircle(_x: Number, _y: Number, rad: Number, color:uint = 0xffffff): void {
+		function drawCircle(_x: Number, _y: Number, rad: Number, color: uint = 0xffffff): void {
 			dg.beginFill(color, 1);
 			dg.drawCircle(_x, _y, rad); // Draw the circle, assigning it a x position, y position, raidius.
 			dg.endFill();
@@ -545,8 +625,8 @@
 		function isInScreen(p1X: Number, p1Y: Number): Boolean {
 			var l: Sprite = layers[1];
 			var localPos: Point = l.localToGlobal(new Point(p1X, p1Y));
-			var w:Number = stage.stageWidth;
-			var h:Number = stage.stageHeight;
+			var w: Number = stage.stageWidth;
+			var h: Number = stage.stageHeight;
 			if (localPos.x > 0 && localPos.x < w && localPos.y > 0 && localPos.y < h) {
 				return true;
 			} else {
@@ -569,81 +649,7 @@
 			}
 		}
 
-		function update(e: Event): void {
-			var i: int = 0;
-			var l: Sprite ;
-			if (tweenTo != null) {
-
-				if (tweenTo.firstTime) {
-					l = layers[1];
-					var dX: Number = ((tweenTo.x - l.x) / 2);
-					var dY: Number = ((tweenTo.y - l.y) / 2);
-
-					for (i = 0; i < layers.length; i++) {
-						l = layers[i];
-						if (i != 0) {
-
-							l.x += dX;
-							l.y += dY;
-
-						}
-					}
-
-					if(getDistance(l.x, l.y, tweenTo.x, tweenTo.y) < 0.5)
-					{
-						setFollow(tweenTo.planet, false);
-					}
-
-	
-				} else {
-					var fX: Number = 0;
-					var fY: Number = 0;
-
-					fX -= (tweenTo.planet.x * currZoom);
-					fY -= (tweenTo.planet.y * currZoom);
-					fX += (stage.stageWidth / 2); //
-					fY += (stage.stageHeight / 2); //
-					for (i = 0; i < layers.length; i++) {
-						l = layers[i];
-						if (i != 0) {
-
-							l.x = fX;
-							l.y = fY;
-						}
-					}
-				}
-
-			} else {
-				if (mouseDown) {
-					var deltaX: Number = stage.mouseX - origMouseX;
-					var deltaY: Number = stage.mouseY - origMouseY;
-
-					for (i = 0; i < layers.length; i++) {
-						l = layers[i];
-						if (i == 0) {
-							l.x -= deltaX * 0.1;
-							l.y -= deltaY * 0.1;
-						} else {
-							l.x += deltaX;
-							l.y += deltaY;
-						}
-					}
-
-					origMouseX = stage.mouseX;
-					origMouseY = stage.mouseY;
-
-
-				}
-			}
-
-			g0.clear();
-			g05.lineStyle(0.1, 0x000000);
-			g05.clear();
-			g1.clear();
-			g1.lineStyle(0.1, 0x000000);
-			drawPlanet(sun);
-			//stage.removeEventListener(Event.ENTER_FRAME, update);
-		}
+		
 
 
 
@@ -673,9 +679,211 @@
 		}
 
 
+		function setFollow(p: Object, firstTime: Boolean): void {
+			var l: Sprite = layers[1];
+			var i: int = 0;
+			trace("hit ", p.name);
+			for (i = 0; i < layers.length; i++) {
+				l = layers[i];
+				var fX: Number = 0;
+				var fY: Number = 0;
+
+				fX -= (p.x * currZoom);
+				fY -= (p.y * currZoom);
+				fX += (stage.stageWidth / 2); //
+				fY += (stage.stageHeight / 2); //
+				p.showOrbit = true;
+				tweenTo = {
+					planet: p,
+					x: fX,
+					y: fY,
+					firstTime: firstTime
+				};
+			}
+		}
+
+		
+
+		function getSpeed(isMoon: Boolean = false): Number {
+			var speed: Number = (Math.random() * 0.005) + 0.001;
+			if (isMoon) {
+				speed += (Math.random() * 0.05) + 0.01;
+			}
+			return speed;
+		}
+
+		function onDown(event: MouseEvent): void {
+			var l: Sprite = layers[1];
+			//this is the offset in origin coords, at scale 1
+			offsetX = (stage.mouseX - l.x) / currZoom;
+			offsetY = (stage.mouseY - l.y) / currZoom;
+			mouseDown = true;
+			if(tweenTo)
+			{
+				tweenTo.planet.showOrbit = false;
+			}
+			
+			tweenTo = null;
+			txt.text = "";
+		}
+		
+
+		function update(e: Event): void {
+			var i: int = 0;
+			var l: Sprite;
 
 
 
+			if (tweenTo != null) {
+
+				if (tweenTo.firstTime) {
+					l = layers[1];
+					var dX: Number = ((tweenTo.x - l.x) / 2);
+					var dY: Number = ((tweenTo.y - l.y) / 2);
+
+					for (i = 0; i < layers.length; i++) {
+						l = layers[i];
+						if (i != 0) {
+
+							l.x += dX;
+							l.y += dY;
+
+						}
+					}
+
+					if (getDistance(l.x, l.y, tweenTo.x, tweenTo.y) < 0.5) {
+						setFollow(tweenTo.planet, false);
+					}
+
+
+				} else {
+					var fX: Number = 0;
+					var fY: Number = 0;
+
+					fX -= (tweenTo.planet.x * currZoom);
+					fY -= (tweenTo.planet.y * currZoom);
+					fX += (stage.stageWidth / 2); //
+					fY += (stage.stageHeight / 2); //
+					for (i = 0; i < layers.length; i++) {
+						l = layers[i];
+						if (i != 0) {
+
+							l.x = fX;
+							l.y = fY;
+						}
+					}
+				}
+
+			} else {
+				if (mouseDown) {
+					var l: Sprite = layers[1];
+					//this is absolute position in scene, scaled
+					var newX = stage.mouseX - (offsetX * currZoom);
+					var newY = stage.mouseY - (offsetY * currZoom);
+					for (i = 0; i < layers.length; i++) {
+						l = layers[i];
+						if (i == 0) {
+							//l.x -= deltaX * 0.1;
+							//l.y -= deltaY * 0.1;
+						} else {
+							l.x = newX;
+							l.y = newY;
+						}
+					}
+
+					prevX = l.x;
+					prevY = l.y;
+
+
+					//var deltaX: Number = (stage.mouseX - origMouseX);
+					//var deltaY: Number = (stage.mouseY - origMouseY);
+
+					
+
+					//origMouseX = stage.mouseX;
+					//origMouseY = stage.mouseY;
+
+
+				}
+			}
+
+			g0.clear();
+			g05.lineStyle(0.1, 0x000000);
+			g05.clear();
+			g1.clear();
+			g1.lineStyle(0.1, 0x000000);
+			drawPlanet(sun);
+			//stage.removeEventListener(Event.ENTER_FRAME, update);
+		}
+
+		
+
+		
+
+		function onUp(event: MouseEvent): void {
+			mouseDown = false;
+		}
+
+		function zooom(event: MouseEvent): void {
+			var l: Sprite = layers[1];
+			//this is the mouse position at current scale inside 
+			var localPosPre: Point = l.globalToLocal(new Point(stage.mouseX, stage.mouseY));
+			//drawCircle(localPosPre.x, localPosPre.y, 10, 0x00cc00);
+			if(tweenTo)
+			{
+				tweenTo.planet.showOrbit = false;
+			}
+
+
+			tweenTo = null;
+			txt.text = "";
+			var proceed: Boolean = true;
+			if (event.delta > 0) {
+				currZoom += zoomAmount;
+			} 
+		   else if (event.delta < 0) {
+				currZoom -= zoomAmount;
+				if (currZoom <= 0.01) {
+					currZoom = 0.01;
+					proceed = false;
+				}
+			}
+		
+			//txt.text = String(event.delta);
+
+			if (!proceed) {
+				return;
+			}
+
+
+			var i: int = 0;
+
+
+			for (i = 0; i < layers.length; i++) {
+				l = layers[i];
+
+				if (i != 0) {
+					l.scaleX = currZoom;
+					l.scaleY = currZoom;
+
+
+				}
+			}
+
+
+			for (i = 0; i < layers.length; i++) {
+				l = layers[i];
+
+				if (i != 0) {
+					l.x =  stage.mouseX - localPosPre.x * currZoom;
+					l.y =  stage.mouseY - localPosPre.y * currZoom;
+			
+				}
+			}
+
+		}
+
+		///////////////////////////---- controls -----/////////
 		function onClick(event: MouseEvent): void {
 			var l: Sprite = layers[1];
 			var localPos: Point = l.globalToLocal(new Point(stage.mouseX, stage.mouseY));
@@ -699,114 +907,7 @@
 
 		}
 
-
-		function setFollow(p: Object, firstTime: Boolean): void {
-			var l: Sprite = layers[1];
-			var i: int = 0;
-			trace("hit ", p.name);
-			for (i = 0; i < layers.length; i++) {
-				l = layers[i];
-				var fX: Number = 0;
-				var fY: Number = 0;
-
-				fX -= (p.x * currZoom);
-				fY -= (p.y * currZoom);
-				fX += (stage.stageWidth / 2); //
-				fY += (stage.stageHeight / 2); //
-
-				tweenTo = {
-					planet: p,
-					x: fX,
-					y: fY,
-					firstTime: firstTime
-				};
-			}
-		}
-
-		function onDown(event: MouseEvent): void {
-			origMouseX = stage.mouseX;
-			origMouseY = stage.mouseY;
-			mouseDown = true;
-			tweenTo = null;
-			txt.text = "";
-		}
-
-		function onUp(event: MouseEvent): void {
-			mouseDown = false;
-		}
-
-		function getSpeed(isMoon: Boolean = false): Number {
-			var speed: Number = (Math.random() * 0.005) + 0.001;
-			if (isMoon) {
-				speed += (Math.random() * 0.05) + 0.01;
-			}
-			return speed;
-		}
-
-
-		function zooom(event: MouseEvent): void {
-			var l: Sprite = layers[1];
-			var localPosPre: Point = l.globalToLocal(new Point(stage.mouseX, stage.mouseY));
-			//drawCircle(localPosPre.x, localPosPre.y, 10, 0x00cc00);
-			tweenTo = null;
-			txt.text = "";
-			var proceed: Boolean = true;
-			if (event.delta > 0) {
-				currZoom += zoomAmount;
-			} else {
-				currZoom -= zoomAmount;
-				if (currZoom <= 0.1) {
-					currZoom = 0.1;
-					proceed = false;
-				}
-			}
-
-			if (!proceed) {
-				return;
-			}
-
-			
-			var i: int = 0;
-
-
-			for (i = 0; i < layers.length; i++) {
-				l = layers[i];
-
-				if (i != 0) {
-					l.scaleX = currZoom;
-					l.scaleY = currZoom;
-
-
-				}
-			}
-
-			var localPosPost: Point = l.globalToLocal(new Point(stage.mouseX, stage.mouseY));
-			var xDiff: Number = (localPosPre.x - localPosPost.x)/2;
-			var yDiff: Number = (localPosPre.y - localPosPost.y)/2;
-			//trace(localPosPre, localPosPost, xDiff, yDiff);
-			
-			//drawCircle(localPosPost.x, localPosPost.y,10, 0x0099ff);
-			
-			var d:Number = Math.abs(event.delta);
-
-			for (i = 0; i < layers.length; i++) {
-				l = layers[i];
-
-				if (i != 0) {
-					if (event.delta > 0) {
-						l.x -= ((localPosPre.x +xDiff) * (zoomAmount * d)) ;
-						l.y -= ((localPosPre.y +yDiff) * (zoomAmount* d)) ;
-						
-					} else {
-						l.x += ((localPosPre.x -xDiff) * (zoomAmount* d)) ;
-						l.y += ((localPosPre.y -yDiff) * (zoomAmount* d)) ;
-						
-					}
-
-				}
-			}
-
-		}
+		
 
 	}
 
