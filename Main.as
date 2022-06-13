@@ -222,7 +222,7 @@
 			y: stage.stageHeight/2,
 			emitsLight: true,
 			lightRad: 10000,
-			//lightAngleDelta: 0.015, //0.03 is the smallest that still runs in normal fps
+			lightAngleDelta: 0.015, //0.03 is the smallest that still runs in normal fps
 			
 			orbitingPlanets: [
 				duplicate(mercury),
@@ -348,7 +348,7 @@
 				{
 					lightLineThickness = 1;
 				}
-				var lightAngleDelta:Number = (Math.PI * 2)/(360/2 );
+				var lightAngleDelta:Number = planet.lightAngleDelta;//(Math.PI * 2)/(360/2 );
 				
 				
 				g0.lineStyle(lightLineThickness, planet.color, 0.4);
