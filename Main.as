@@ -222,7 +222,7 @@
 			y: stage.stageHeight/2,
 			emitsLight: true,
 			lightRad: 10000,
-			lightAngleDelta: 0.015, //0.03 is the smallest that still runs in normal fps
+			lightAngleDelta: 0.03, //0.03 is the smallest that still runs in normal fps
 			
 			orbitingPlanets: [
 				duplicate(mercury),
@@ -248,7 +248,9 @@
 			stage.addChild(layer1);
 			stage.addChild(debugLayer);
 			stage.addChild(txt);
+			stage.addChild(moonsTxt);
 			txt.text = "";
+			moonsTxt.text = "";
 
 
 			for (var i: int = 0; i < layers.length; i++) {
@@ -725,6 +727,7 @@
 			
 			tweenTo = null;
 			txt.text = "";
+			moonsTxt.text = "";
 		}
 		
 
@@ -795,15 +798,6 @@
 					prevY = l.y;
 
 
-					//var deltaX: Number = (stage.mouseX - origMouseX);
-					//var deltaY: Number = (stage.mouseY - origMouseY);
-
-					
-
-					//origMouseX = stage.mouseX;
-					//origMouseY = stage.mouseY;
-
-
 				}
 			}
 
@@ -837,6 +831,7 @@
 
 			tweenTo = null;
 			txt.text = "";
+			moonsTxt.text = "";
 			var proceed: Boolean = true;
 			if (event.delta > 0) {
 				currZoom += zoomAmount;
@@ -901,6 +896,12 @@
 			}
 			if (found) {
 				txt.text = p.name;
+				moonsTxt.text = "";
+				if(p.numMoons)
+				{
+					moonsTxt.text = String(p.numMoons) + " Moons";
+				}
+				
 				setFollow(p, true);
 
 			}
