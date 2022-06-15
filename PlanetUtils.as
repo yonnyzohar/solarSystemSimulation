@@ -7,6 +7,64 @@
 			// constructor code
 		}
 
+		public static function addMoons(model:Model, stage:Stage): void
+		{
+			for (var i: int = 0; i < model.allPlanets.length; i++)
+			{
+				var planet: Object = model.allPlanets[i];
+				if (planet.numMoons)
+				{
+					var dist: Number = 20;
+					for (var j: int = 0; j < planet.numMoons; j++)
+					{
+
+						var moon: Object = {
+							radius: (Math.random() * 10) + 4,
+							color: 0xffffff * Math.random(),
+							distanceFromParent: dist,
+							angle: Math.random() * (Math.PI * 2),
+							speed: Utils.getSpeed(true),
+							name: "moon"
+						}
+
+						dist += (moon.radius * 2);
+
+						planet.orbitingPlanets.push(moon);
+					}
+				}
+
+			}
+		}
+
+		public static function populatePlanetsARrr(planet: Object,model:Model, stage:Stage): void
+		{
+			model.allPlanets.push(planet);
+			if (planet.orbitingPlanets)
+			{
+				for (var i: int = 0; i < planet.orbitingPlanets.length; i++)
+				{
+					var p: Object = planet.orbitingPlanets[i];
+
+					populatePlanetsARrr(p, model, stage);
+				}
+			}
+		}
+
+
+		public static function populateBGStars(model:Model, stage:Stage): void
+		{
+			model.gs.lineStyle(0.1, 0x000000);
+
+			for (var i: int = 0; i < 100; i++)
+			{
+				var _x: Number = stage.stageWidth * Math.random();
+				var _y: Number = stage.stageHeight * Math.random();
+				model.gs.beginFill(0xffffff, 1);
+				model.gs.drawCircle(_x, _y, 1); // Draw the circle, assigning it a x position, y position, raidius.
+				model.gs.endFill();
+			}
+		}
+
 		public static function drawPlanet(model:Model, stage:Stage, planet: Object, parentObj: Object = null): void {
 			model.g1.beginFill(planet.color, 1);
 
