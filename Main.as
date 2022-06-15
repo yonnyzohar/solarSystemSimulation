@@ -1,8 +1,7 @@
 ﻿package
 {
-	import flash.display.MovieClip;
-	import flash.geom.Point;
-	import flash.display.Sprite;
+	import flash.display.*;
+	 import flash.geom.*;
 	import flash.events.*;
 
 	public class Main extends MovieClip
@@ -17,6 +16,7 @@
 
 
 		var layerS: Sprite = new Sprite();
+		var layerT: Sprite = new Sprite();
 		var layer0: Sprite = new Sprite();
 		var layer05: Sprite = new Sprite();
 		var layer1: Sprite = new Sprite();
@@ -28,13 +28,16 @@
 		var prevY = 0;
 
 
-		var layers: Array = [layerS, layer0, layer05, layer1, debugLayer];
+		var layers: Array = [layerS, layerT, layer0, layer05, layer1, debugLayer];
 
 		var gs = layerS.graphics;
+		var gt = layerT.graphics;
 		var g0 = layer0.graphics;
 		var g05 = layer05.graphics;
 		var g1 = layer1.graphics;
 		var dg = debugLayer.graphics;
+		
+		
 
 		var allPlanets: Array = [];
 		var tweenTo: Object = null;
@@ -221,12 +224,12 @@
 
 
 		var sun: Object = {
-			radius: 50,
+			radius: 200,
 			color: 0xffff00,
 			x: stage.stageWidth / 2,
 			y: stage.stageHeight / 2,
 			emitsLight: true,
-			lightRad: 10000,
+			lightRad: 5000,
 			lightAngleDelta: 0.01, //0.03 is the smallest that still runs in normal fps
 
 			orbitingPlanets: [
@@ -246,26 +249,27 @@
 
 		public function Main()
 		{
+
 			// constructor code
 			stage.align = "topLeft";
-			stage.addChild(layerS);
-			stage.addChild(layer0);
-			stage.addChild(layer05);
-			stage.addChild(layer1);
-			stage.addChild(debugLayer);
-			stage.addChild(txt);
-			stage.addChild(moonsTxt);
+			
+			
 			txt.text = "";
 			moonsTxt.text = "";
 
-
+			
 			for (var i: int = 0; i < layers.length; i++)
 			{
-				var l: Sprite = layers[0];
+				var l: Sprite = layers[i];
+				stage.addChild(l);
 				l.mouseChildren = false;
 				l.mouseEnabled = false;
 			}
-
+		
+			stage.addChild(debugLayer);
+			stage.addChild(txt);
+			stage.addChild(moonsTxt);
+			layerT.mask = layer0;
 
 			populatePlanetsARrr(sun);
 			addMoons();
@@ -362,6 +366,20 @@
 
 			if (planet.emitsLight)
 			{
+				var rad = planet.lightRad;
+				var rings = 10;
+				
+				for(var i = 0; i < rings; i++)
+				{
+					var per = i / rings;
+					gt.beginFill(planet.color,.05);
+					gt.drawCircle(planet.x, planet.y, rad * per);
+					gt.endFill();
+					
+				}
+			    
+
+				
 				var lightLineThickness: Number = 2;
 				if (lightLineThickness < 1)
 				{
@@ -413,6 +431,16 @@
 			var baseLen: Number = planet.radius;
 			var a: Object;
 
+			/*
+			var fillType:String = GradientType.RADIAL;
+			var colors:Array = [0xFF0000, 0x0000FF];
+			var alphas:Array = [1, 0];
+			var ratios:Array = [0x00, 0xFF];
+			var matr:Matrix = new Matrix();
+			matr.createGradientBox(500, 500, 0, 0, 0);
+*/
+			g0.lineStyle(0, planet.color, 0.5);//per * 0.6
+
 			//first emit to all the planets
 			//trace(angles.length);
 			for (var h: int = 0; h < angles.length; h++)
@@ -420,9 +448,36 @@
 				a = angles[h];
 				if (a)
 				{
-					
+					g0.moveTo(planet.x, planet.y);
+					g0.beginFill(planet.color);
+
+
+
+				     //g0.beginGradientFill(fillType, colors, alphas, ratios, matr);  
+
+
+					var cos: Number = Math.cos(a.left);
+					var sin: Number = Math.sin(a.left);
+					var dpX: Number = planet.x + cos * a.dist ;//+ lightLineThickness)
+					var dpY: Number = planet.y + sin  * a.dist;//+ lightLineThickness
+					g0.lineTo(dpX, dpY);
+
+					cos = Math.cos(a.right);
+					sin = Math.sin(a.right);
+					dpX = planet.x + cos * a.dist ;//+ lightLineThickness)
+					dpY = planet.y + sin  * a.dist;//+ lightLineThickness
+					g0.lineTo(dpX, dpY);
+
+					g0.lineTo(planet.x, planet.y);
+					g0.endFill();
+
+					/*
 					for (var l: Number = a.left; l < a.right; l += lightAngleDelta)
 					{
+
+						
+
+						
 						var cos1: Number = Math.cos(l);
 						var sin1: Number = Math.sin(l);
 						var planetSurfaceX: Number = planet.x + (cos1 * baseLen);
@@ -432,7 +487,7 @@
 						{
 							emitLight(lightLineThickness, planetSurfaceX, planetSurfaceY, planet.x, planet.y, cos1, sin1, Math.min(a.dist, planet.lightRad), planet.lightRad, planet.color);//
 						}
-					}
+					}*/
 
 				}
 			}
@@ -502,6 +557,8 @@
 
 			}
 		}
+
+
 
 		//emitLight(lightLineThickness, planetSurfaceX, planetSurfaceY, planet.x, planet.y, cos1, sin1, Math.min(a.dist, planet.lightRad), planet.lightRad, 0xffffff * Math.random(), baseLen);
 		function emitLight(
@@ -622,7 +679,7 @@
 						//trace("		element right is smaller than last right");
 						if(element.distance > lastElement.distance)
 						{
-							trace("		element is farther");
+							//trace("		element is farther");
 							bigArr[0].splice(i,1);
 							if(bigArr[0].length == 0)
 							{
@@ -793,7 +850,7 @@
 			}
 			
 			/**/
-			trace("output");
+			//trace("output");
 			var res = [];
 			for (var b = 0; b < tmp.length; b++)
 			{	
@@ -802,7 +859,7 @@
 				{
 					var pp = a[i];
 					res.push(pp);
-					trace("l",pp.left,"r", pp.right, "d",pp.dist);
+					//trace("l",pp.left,"r", pp.right, "d",pp.dist);
 				}
 				
 			}
@@ -947,7 +1004,7 @@
 		{
 			var l: Sprite = layers[1];
 			var i: int = 0;
-			trace("hit ", p.name);
+			//trace("hit ", p.name);
 			for (i = 0; i < layers.length; i++)
 			{
 				l = layers[i];
@@ -1088,6 +1145,7 @@
 			{
 				//yonny = false;
 				g0.clear();
+				gt.clear();
 				g05.lineStyle(0.1, 0x000000);
 				g05.clear();
 				g1.clear();
