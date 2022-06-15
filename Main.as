@@ -378,61 +378,13 @@
 
 				var emptypSpaces = [];
 				//sort the array and fix it to contain the accurate gaps so none are overlapping
-				angles = addEntry1(angles, emptypSpaces);
+				angles = addEntry1(angles, emptypSpaces, planet);
 
-				var baseLen: Number = planet.radius;
-
-
-		
-				var a: Object;
-
-				//first emit to all the planets
-				//trace(angles.length);
-				for (var h: int = 0; h < angles.length; h++)
-				{
-					a = angles[h];
-					if (a)
-					{
-						
-						for (var l: Number = a.left; l <= a.right; l += lightAngleDelta)
-						{
-							var cos1: Number = Math.cos(l);
-							var sin1: Number = Math.sin(l);
-							var planetSurfaceX: Number = planet.x + (cos1 * baseLen);
-							var planetSurfaceY: Number = planet.y + (sin1 * baseLen);
-
-							//if (isInScreen(planetSurfaceX, planetSurfaceY)) 
-							{
-								emitLight(lightLineThickness, planetSurfaceX, planetSurfaceY, planet.x, planet.y, cos1, sin1, Math.min(a.dist, planet.lightRad), planet.lightRad, planet.color);//
-							}
-						}
-
-					}
-
-
-				}
+				sendBeams(angles, planet, lightLineThickness);
+			
+				
 				//then emit to empty space
-			
-			
-				for (var k: int = 0; k < emptypSpaces.length; k++)
-				{
-					a = emptypSpaces[k];
-					for (var ang: Number = a.left; ang < a.right; ang += lightAngleDelta)
-					{
-						var cos2: Number = Math.cos(ang);
-						var sin2: Number = Math.sin(ang);
-						var planetSurfaceX: Number = planet.x + (cos2 * baseLen);
-						var planetSurfaceY: Number = planet.y + (sin2 * baseLen);
-
-						//if (isInScreen(planetSurfaceX, planetSurfaceY)) 
-						{
-
-							emitLight(lightLineThickness, planetSurfaceX, planetSurfaceY, planet.x, planet.y, cos2, sin2, planet.lightRad, planet.lightRad, planet.color);
-						}
-
-
-					}
-				}/**/
+				sendBeams(emptypSpaces, planet, lightLineThickness)
 			}
 
 			if (planet.rings)
@@ -451,11 +403,38 @@
 						g05.endFill();
 					}
 					startDist += j;
+				}
+			}
+		}
 
+		function sendBeams(angles:Array, planet:Object, lightLineThickness:Number):void
+		{
+			var lightAngleDelta: Number = planet.lightAngleDelta;
+			var baseLen: Number = planet.radius;
+			var a: Object;
+
+			//first emit to all the planets
+			//trace(angles.length);
+			for (var h: int = 0; h < angles.length; h++)
+			{
+				a = angles[h];
+				if (a)
+				{
+					
+					for (var l: Number = a.left; l < a.right; l += lightAngleDelta)
+					{
+						var cos1: Number = Math.cos(l);
+						var sin1: Number = Math.sin(l);
+						var planetSurfaceX: Number = planet.x + (cos1 * baseLen);
+						var planetSurfaceY: Number = planet.y + (sin1 * baseLen);
+
+						//if (isInScreen(planetSurfaceX, planetSurfaceY)) 
+						{
+							emitLight(lightLineThickness, planetSurfaceX, planetSurfaceY, planet.x, planet.y, cos1, sin1, Math.min(a.dist, planet.lightRad), planet.lightRad, planet.color);//
+						}
+					}
 
 				}
-
-
 			}
 		}
 
@@ -557,7 +536,7 @@
 		//if we've made alterations to the array we need to do the algorithm again until we havs the 
 		//accurate gaps array
 
-		function addEntry1(arr: Array, empties:Array): Array
+		function addEntry1(arr: Array, empties:Array, planet:Object): Array
 		{
 			// this fort function sorts the array of planes angles into clusters. each cluster
 			//meaning planets are touching each other
@@ -791,19 +770,19 @@
 				{
 					if(a[0].left != 0)
 					{
-						o = {left : 0, right : a[0].left };
+						o = {left : 0, right : a[0].left, dist : planet.lightRad};
 						empties.push(o);
-						o = {left : a[a.length-1].right };
+						o = {left : a[a.length-1].right, dist : planet.lightRad };
 					}
 					else{
-						o = {left : a[a.length-1].right };
+						o = {left : a[a.length-1].right, dist : planet.lightRad };
 					}
 
 				}
 				else{
 					o.right = a[0].left;
 					empties.push(o);
-					o = {left : a[a.length-1].right };
+					o = {left : a[a.length-1].right , dist : planet.lightRad};
 					
 					if(h == tmp.length-1)
 					{
