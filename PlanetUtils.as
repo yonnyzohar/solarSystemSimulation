@@ -38,12 +38,17 @@
 
 		public static function populatePlanetsARrr(planet: Object,model:Model, stage:Stage): void
 		{
+			var maxDistance = 1000000
 			model.allPlanets.push(planet);
 			if (planet.orbitingPlanets)
 			{
 				for (var i: int = 0; i < planet.orbitingPlanets.length; i++)
 				{
+					//this will make planets move slower if they are farther away
 					var p: Object = planet.orbitingPlanets[i];
+					p.speed = (maxDistance / p.distanceFromParent) * 0.000001;
+					//speed: Utils.getSpeed()
+					//distanceFromParent
 
 					populatePlanetsARrr(p, model, stage);
 				}
