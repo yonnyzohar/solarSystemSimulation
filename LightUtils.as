@@ -7,19 +7,21 @@
 			// constructor code
 		}
 
-		public static function handleLight(planet: Object, model:Model): void {
+		public static function handleLight(planet: Star, model:Model): void {
 			var rad = planet.lightRad;
-			var rings = 10;
+			var rings = 8;
 
 			for (var i = 0; i < rings; i++) {
 				var per = i / rings;
-				model.gt.beginFill(planet.color, .02);
-				model.gt.drawCircle(planet.x, planet.y, rad * per);
-				model.gt.endFill();
+				if(i != rings-1)
+				{
+					model.gt.beginFill(planet.color,.05);//
+					model.gt.drawCircle(planet.x, planet.y, rad * per);
+					model.gt.endFill();
+				}
+				
 
 			}
-
-
 
 			var lightLineThickness: Number = 2;
 			if (lightLineThickness < 1) {
@@ -45,8 +47,8 @@
 			sendBeams(emptypSpaces, planet, lightLineThickness, model, true)
 		}
 
-		public static function gatherAllPlanetPositions(angles: Array, planet: Object, arr: Array): void {
-			var p: Object;
+		public static function gatherAllPlanetPositions(angles: Array, planet: Star, arr:Vector.<Planet>): void {
+			var p: Planet;
 			for (var j: int = 0; j < arr.length; j++) {
 				p = arr[j];
 

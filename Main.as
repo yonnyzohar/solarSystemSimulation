@@ -5,7 +5,8 @@
 
 	public class Main extends MovieClip {
 		var model: Model;
-
+		var lastPlanet:Planet = null;
+		var spaceShip:SpaceShip;
 
 		public function Main() {
 
@@ -40,6 +41,8 @@
 			stage.addEventListener(MouseEvent.MOUSE_UP, onUp);
 			stage.addEventListener(MouseEvent.CLICK, onClick);
 			stage.addEventListener(MouseEvent.MOUSE_WHEEL, zooom);
+		
+			spaceShip = new SpaceShip();
 
 
 
@@ -82,8 +85,8 @@
 				model.currZoom += model.zoomAmount;
 			} else if (event.delta < 0) {
 				model.currZoom -= model.zoomAmount;
-				if (model.currZoom <= 0.01) {
-					model.currZoom = 0.01;
+				if (model.currZoom <= 0.1) {
+					model.currZoom = 0.1;
 					proceed = false;
 				}
 			}
@@ -120,13 +123,13 @@
 
 		}
 
-		function findNearestPlanet():Object
+		function findNearestPlanet():Planet
 		{
 			var l: Sprite = model.layers[1];
 			var localPos: Point = l.globalToLocal(new Point(stage.mouseX, stage.mouseY));
 			var xPos: Number = localPos.x; //(  ((stage.mouseX* currZoom) - l.x)  ); // l.x + -
 			var yPos: Number = localPos.y; //(  ((stage.mouseY* currZoom) - l.y) ); //l.y + -
-			var p: Object;
+			var p: Planet;
 			var found: Boolean = false;
 			var i: int = 0;
 			for (i = 0; i < model.allPlanets.length; i++) {
@@ -142,7 +145,7 @@
 
 		///////////////////////////---- controls -----/////////
 		function onClick(event: MouseEvent): void {
-			var p = findNearestPlanet();
+			var p:Planet = findNearestPlanet();
 			if (p) {
 				model.txt.text = p.name;
 				model.moonsTxt.text = "";
@@ -223,8 +226,8 @@
 
 				}
 				else{
-					var p = findNearestPlanet();
-					if (p) {
+					var p:Planet = findNearestPlanet();
+					if (p && p != lastPlanet) {
 						model.txt.text = p.name;
 						model.moonsTxt.text = "";
 						if (p.numMoons) {
@@ -232,9 +235,15 @@
 						}
 					}
 					else{
-						model.txt.text = "";
-						model.moonsTxt.text = "";
+						if(p == null && lastPlanet != null)
+						{
+							model.txt.text = "";
+							model.moonsTxt.text = "";
+						}
+						
 					}
+
+					lastPlanet = p;
 				}
 			}
 			var yonny = true;

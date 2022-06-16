@@ -16,20 +16,20 @@
 				{
 					if(!planet.orbitingPlanets)
 					{
-						planet.orbitingPlanets = [];
+						planet.orbitingPlanets = new Vector.<Planet>() ;
 					}
 					var dist: Number = planet.radius + 20;
 					for (var j: int = 0; j < planet.numMoons; j++)
 					{
 
-						var moon: Object = {
-							radius: (Math.random() * 10) + 4,
-							color: 0xffffff * Math.random(),
-							distanceFromParent: dist,
-							angle: Math.random() * (Math.PI * 2),
-							speed: Utils.getSpeed(true),
-							name: "moon"
-						}
+						var moon: Planet = new Planet();
+						moon.radius= (Math.random() * 10) + 4;
+						moon.color= 0xffffff * Math.random();
+						moon.distanceFromParent= dist;
+						moon.angle= Math.random() * (Math.PI * 2);
+						moon.speed= Utils.getSpeed(true);
+						moon.name= "moon";
+						
 
 						dist += (moon.radius * 4);
 
@@ -112,7 +112,7 @@
 			}
 
 
-			var p: Object;
+			var p:Planet;
 			if (planet.orbitingPlanets) {
 				for (var i: int = 0; i < planet.orbitingPlanets.length; i++) {
 					p = planet.orbitingPlanets[i];
@@ -120,10 +120,9 @@
 				}
 			}
 
-			if (planet.emitsLight) {
+			if (planet is Star) {
 
-				LightUtils.handleLight(planet, model);
-
+				LightUtils.handleLight(Star(planet), model);
 			}
 
 			if (planet.rings) {

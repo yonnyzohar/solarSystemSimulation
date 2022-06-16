@@ -25,7 +25,7 @@
 		}
 	
 
-		public static function setFollow(p: Object, firstTime: Boolean, stage: Stage,model:Model): void {
+		public static function setFollow(p: Planet, firstTime: Boolean, stage: Stage,model:Model): void {
 			var l: Sprite = model.layers[1];
 			var i: int = 0;
 			//trace("hit ", p.name);
