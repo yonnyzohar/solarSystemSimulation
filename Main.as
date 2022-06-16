@@ -120,8 +120,8 @@
 
 		}
 
-		///////////////////////////---- controls -----/////////
-		function onClick(event: MouseEvent): void {
+		function findNearestPlanet():Object
+		{
 			var l: Sprite = model.layers[1];
 			var localPos: Point = l.globalToLocal(new Point(stage.mouseX, stage.mouseY));
 			var xPos: Number = localPos.x; //(  ((stage.mouseX* currZoom) - l.x)  ); // l.x + -
@@ -133,10 +133,17 @@
 				p = model.allPlanets[i];
 				if (MathUtils.getDistance(p.x, p.y, xPos, yPos) < p.radius) {
 					found = true;
-					break;
+					return p;
 				}
 			}
-			if (found) {
+			return null;
+			
+		}
+
+		///////////////////////////---- controls -----/////////
+		function onClick(event: MouseEvent): void {
+			var p = findNearestPlanet();
+			if (p) {
 				model.txt.text = p.name;
 				model.moonsTxt.text = "";
 				if (p.numMoons) {
@@ -144,7 +151,6 @@
 				}
 
 				Utils.setFollow(p, true, stage, model);
-
 			}
 
 		}
@@ -215,6 +221,20 @@
 					model.prevY = l.y;
 
 
+				}
+				else{
+					var p = findNearestPlanet();
+					if (p) {
+						model.txt.text = p.name;
+						model.moonsTxt.text = "";
+						if (p.numMoons) {
+							model.moonsTxt.text = String(p.numMoons) + " Moons";
+						}
+					}
+					else{
+						model.txt.text = "";
+						model.moonsTxt.text = "";
+					}
 				}
 			}
 			var yonny = true;

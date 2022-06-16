@@ -149,7 +149,7 @@
 				speed: Utils.getSpeed(),
 				orbitingPlanets: [],
 				showOrbit: false,
-				numMoons: 5,
+				numMoons: 1,
 
 				name: "earth"
 			}
@@ -225,7 +225,7 @@
 				x: _stage.stageWidth / 2,
 				y: _stage.stageHeight / 2,
 				emitsLight: true,
-				lightRad: 5000,
+				lightRad: 9000,
 				lightAngleDelta: 0.01, //0.03 is the smallest that still runs in normal fps
 
 				orbitingPlanets: [

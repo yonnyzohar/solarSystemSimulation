@@ -13,7 +13,7 @@
 
 			for (var i = 0; i < rings; i++) {
 				var per = i / rings;
-				model.gt.beginFill(planet.color, .05);
+				model.gt.beginFill(planet.color, .02);
 				model.gt.drawCircle(planet.x, planet.y, rad * per);
 				model.gt.endFill();
 
@@ -38,11 +38,11 @@
 			//sort the array and fix it to contain the accurate gaps so none are overlapping
 			angles = addEntry1(angles, emptypSpaces, planet);
 
-			sendBeams(angles, planet, lightLineThickness, model);
+			sendBeams(angles, planet, lightLineThickness, model, false);
 
 
 			//then emit to empty space
-			sendBeams(emptypSpaces, planet, lightLineThickness, model)
+			sendBeams(emptypSpaces, planet, lightLineThickness, model, true)
 		}
 
 		public static function gatherAllPlanetPositions(angles: Array, planet: Object, arr: Array): void {
@@ -107,30 +107,7 @@
 
 
 		//emitLight(lightLineThickness, planetSurfaceX, planetSurfaceY, planet.x, planet.y, cos1, sin1, Math.min(a.dist, planet.lightRad), planet.lightRad, 0xffffff * Math.random(), baseLen);
-		public static function emitLight(
-	model:Model, 
-	stage:Stage,
-			lightLineThickness: Number,
-			planetSurfaceX: Number,
-			planetSurfaceY: Number,
-			baseX: Number,
-			baseY: Number,
-			cos: Number,
-			sin: Number,
-			currentLightRad: Number,
-			totalLightRad: Number,
-			color: uint): void {
-
-			model.g0.moveTo(planetSurfaceX, planetSurfaceY);
-
-			var dpX: Number = baseX + cos * currentLightRad; //+ lightLineThickness)
-			var dpY: Number = baseY + sin * currentLightRad; //+ lightLineThickness
-
-			if (Utils.isInScreen(planetSurfaceX, planetSurfaceY, model.layers, stage) || Utils.isInScreen(dpX, dpY, model.layers, stage)) {
-				model.g0.lineStyle(lightLineThickness, color, 0.5); //per * 0.6
-				model.g0.lineTo(dpX, dpY);
-			}
-		}
+		
 
 		//now that we have all angles to the sun we need to fix them so none are overlapping
 		//some may encapsulte others
@@ -402,7 +379,7 @@
 			return res;
 		}
 
-		public static function sendBeams(angles: Array, planet: Object, lightLineThickness: Number, model:Model): void {
+		public static function sendBeams(angles: Array, planet: Object, lightLineThickness: Number, model:Model, isEmpty:Boolean): void {
 			var lightAngleDelta: Number = planet.lightAngleDelta;
 			var baseLen: Number = planet.radius;
 			var a: Object;
@@ -423,6 +400,21 @@
 					var dpX: Number = planet.x + cos * a.dist; //+ lightLineThickness)
 					var dpY: Number = planet.y + sin * a.dist; //+ lightLineThickness
 					model.g0.lineTo(dpX, dpY);
+
+					if(isEmpty)
+					{
+						var pers:Array = [0.25,0.5,0.75];
+						for(var i = 0; i < pers.length; i++)
+						{
+							var midAngle:Number = a.left + ((a.right - a.left) * pers[i]);
+							cos = Math.cos(midAngle);
+							sin = Math.sin(midAngle);
+							dpX = planet.x + cos * a.dist; //+ lightLineThickness)
+							dpY = planet.y + sin * a.dist; //+ lightLineThickness
+							model.g0.lineTo(dpX, dpY);
+						}
+						
+					}
 
 					cos = Math.cos(a.right);
 					sin = Math.sin(a.right);
@@ -470,6 +462,33 @@
 			}
 			return element;
 		}
+
+		/*
+public static function emitLight(
+	model:Model, 
+	stage:Stage,
+			lightLineThickness: Number,
+			planetSurfaceX: Number,
+			planetSurfaceY: Number,
+			baseX: Number,
+			baseY: Number,
+			cos: Number,
+			sin: Number,
+			currentLightRad: Number,
+			totalLightRad: Number,
+			color: uint): void {
+
+			model.g0.moveTo(planetSurfaceX, planetSurfaceY);
+
+			var dpX: Number = baseX + cos * currentLightRad; //+ lightLineThickness)
+			var dpY: Number = baseY + sin * currentLightRad; //+ lightLineThickness
+
+			if (Utils.isInScreen(planetSurfaceX, planetSurfaceY, model.layers, stage) || Utils.isInScreen(dpX, dpY, model.layers, stage)) {
+				model.g0.lineStyle(lightLineThickness, color, 0.5); //per * 0.6
+				model.g0.lineTo(dpX, dpY);
+			}
+		}
+		*/
 
 	}
 
