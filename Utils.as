@@ -28,7 +28,7 @@
 		public static function setFollow(p: Planet, firstTime: Boolean, stage: Stage,model:Model): void {
 			var l: Sprite = model.layers[1];
 			var i: int = 0;
-			//trace("hit ", p.name);
+			////trace("hit ", p.name);
 			for (i = 0; i < model.layers.length; i++) {
 				l = model.layers[i];
 				var fX: Number = 0;
@@ -63,11 +63,8 @@
 	
 		
 
-		public static function printObj(obj: Object): String {
-			var str: String = "";
-			for (var k: String in obj) {
-				str += k + ":" + obj[k] + " ";
-			}
+		public static function printObj(obj: AngledBody): String {
+			var str: String = "left " + obj.left + " right " + obj.right + " dist " + obj.dist ;
 			return str;
 		}
 

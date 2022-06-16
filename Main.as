@@ -7,6 +7,7 @@
 		var model: Model;
 		var lastPlanet:Planet = null;
 		var spaceShip:SpaceShip;
+		var yonny = true;
 
 		public function Main() {
 
@@ -33,7 +34,13 @@
 			model.layerT.mask = model.layer0;
 
 			PlanetUtils.populatePlanetsARrr(model.sun, model, stage);
-			PlanetUtils.addMoons(model, stage);
+		
+		
+			for (var i: int = 0; i < model.allPlanets.length; i++)
+			{
+				var planet: Planet = model.allPlanets[i];
+				planet.addMoons();
+			}
 			PlanetUtils.populateBGStars(model, stage);
 
 			stage.addEventListener(Event.ENTER_FRAME, update);
@@ -43,6 +50,8 @@
 			stage.addEventListener(MouseEvent.MOUSE_WHEEL, zooom);
 		
 			spaceShip = new SpaceShip();
+			 spaceShip.x = 0;
+			 spaceShip.y = 0;
 
 
 
@@ -75,6 +84,8 @@
 			if (model.tweenTo) {
 				model.tweenTo.planet.showOrbit = false;
 			}
+
+
 
 
 			model.tweenTo = null;
@@ -117,7 +128,6 @@
 				if (i != 0) {
 					l.x = stage.mouseX - localPosPre.x * model.currZoom;
 					l.y = stage.mouseY - localPosPre.y * model.currZoom;
-
 				}
 			}
 
@@ -246,19 +256,29 @@
 					lastPlanet = p;
 				}
 			}
-			var yonny = true;
+			
 			if (yonny) {
+				//trace("");
 				//yonny = false;
 				model.g0.clear();
-				model.gt.clear();
 				model.g05.lineStyle(0.1, 0x000000);
 				model.g05.clear();
 				model.g1.clear();
 				model.g1.lineStyle(0.1, 0x000000);
-				PlanetUtils.drawPlanet(model, stage, model.sun);
+
+				try
+				{
+					model.sun.draw();
+				}
+				catch(e:Error)
+				{
+					stage.removeEventListener(Event.ENTER_FRAME, update);
+				}
+				
+				//PlanetUtils.drawPlanet(model, stage, model.sun);
 			}
 
-			//stage.removeEventListener(Event.ENTER_FRAME, update);
+			//
 		}
 
 
