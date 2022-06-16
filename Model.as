@@ -120,19 +120,16 @@
 			layers = [layerS, layerT, layer0, layer05, layer1, debugLayer];
 
 			mercury = {
-				radius: 15,
+				radius: 30,
 				color: 0xffffff * Math.random(),
 				distanceFromParent: 300,
 				angle: Math.random() * (Math.PI * 2),
-				//speed: Utils.getSpeed(),
-				orbitingPlanets: [],
 				showOrbit: false,
-				numMoons: 5,
 				name: "mercury"
 			}
 
 			venus = {
-				radius: 20,
+				radius: 35,
 				color: 0xffffff * Math.random(),
 				distanceFromParent: 600,
 				angle: Math.random() * (Math.PI * 2),
@@ -142,11 +139,10 @@
 			}
 
 			earth = {
-				radius: 22,
+				radius: 40,
 				color: 0xffffff * Math.random(),
-				distanceFromParent: 200,
+				distanceFromParent: 1000,
 				angle: 0, //Math.random() * (Math.PI * 2),
-				//speed: Utils.getSpeed(),
 				orbitingPlanets: [],
 				showOrbit: false,
 				numMoons: 1,
@@ -156,11 +152,10 @@
 
 
 			mars = {
-				radius: 18,
+				radius: 20,
 				color: 0xffffff * Math.random(),
 				distanceFromParent: 1500,
 				angle: Math.random() * (Math.PI * 2),
-				//speed: Utils.getSpeed(),
 				orbitingPlanets: [],
 				showOrbit: false,
 				numMoons: 2,
@@ -172,10 +167,8 @@
 				color: 0xffffff * Math.random(),
 				distanceFromParent: 2500,
 				angle: Math.random() * (Math.PI * 2),
-				//speed: Utils.getSpeed(),
-				orbitingPlanets: [],
 				showOrbit: false,
-				numMoons: 53,
+				numMoons: 4,
 				name: "jupiter"
 			}
 
@@ -188,7 +181,7 @@
 				rings: [Math.random() * 0xffffff, Math.random() * 0xffffff, Math.random() * 0xffffff, Math.random() * 0xffffff, Math.random() * 0xffffff],
 				orbitingPlanets: [],
 				showOrbit: false,
-				numMoons: 53,
+				numMoons: 12,
 				name: "saturn"
 			}
 
@@ -201,7 +194,7 @@
 				angle: Math.random() * (Math.PI * 2),
 				//speed: Utils.getSpeed(),
 				orbitingPlanets: [],
-				numMoons: 27,
+				numMoons: 3,
 				showOrbit: false,
 				name: "uranus"
 			}
@@ -214,7 +207,7 @@
 				//speed: Utils.getSpeed(),
 				orbitingPlanets: [],
 				showOrbit: false,
-				numMoons: 14,
+				numMoons: 4,
 				name: "neptune"
 			}
 

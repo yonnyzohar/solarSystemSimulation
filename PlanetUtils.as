@@ -14,7 +14,11 @@
 				var planet: Object = model.allPlanets[i];
 				if (planet.numMoons)
 				{
-					var dist: Number = 20;
+					if(!planet.orbitingPlanets)
+					{
+						planet.orbitingPlanets = [];
+					}
+					var dist: Number = planet.radius + 20;
 					for (var j: int = 0; j < planet.numMoons; j++)
 					{
 
@@ -27,7 +31,7 @@
 							name: "moon"
 						}
 
-						dist += (moon.radius * 2);
+						dist += (moon.radius * 4);
 
 						planet.orbitingPlanets.push(moon);
 					}
