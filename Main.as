@@ -38,7 +38,7 @@
 		
 			for (var i: int = 0; i < model.allPlanets.length; i++)
 			{
-				var planet: Planet = model.allPlanets[i];
+				var planet: Planet = Planet(model.allPlanets[i]);
 				planet.addMoons();
 			}
 			PlanetUtils.populateBGStars(model, stage);
@@ -49,11 +49,11 @@
 			stage.addEventListener(MouseEvent.CLICK, onClick);
 			stage.addEventListener(MouseEvent.MOUSE_WHEEL, zooom);
 		
-			spaceShip = new SpaceShip();
-			 spaceShip.x = 0;
-			 spaceShip.y = 0;
+			spaceShip = new SpaceShip(model, stage);
+			spaceShip.x = 0;
+			spaceShip.y = 0;
 
-
+			//model.allPlanets.push(spaceShip);
 
 		}
 
@@ -133,29 +133,13 @@
 
 		}
 
-		function findNearestPlanet():Planet
-		{
-			var l: Sprite = model.layers[1];
-			var localPos: Point = l.globalToLocal(new Point(stage.mouseX, stage.mouseY));
-			var xPos: Number = localPos.x; //(  ((stage.mouseX* currZoom) - l.x)  ); // l.x + -
-			var yPos: Number = localPos.y; //(  ((stage.mouseY* currZoom) - l.y) ); //l.y + -
-			var p: Planet;
-			var found: Boolean = false;
-			var i: int = 0;
-			for (i = 0; i < model.allPlanets.length; i++) {
-				p = model.allPlanets[i];
-				if (MathUtils.getDistance(p.x, p.y, xPos, yPos) < p.radius) {
-					found = true;
-					return p;
-				}
-			}
-			return null;
-			
-		}
+		
 
 		///////////////////////////---- controls -----/////////
 		function onClick(event: MouseEvent): void {
-			var p:Planet = findNearestPlanet();
+			var l: Sprite = model.layers[1];
+			var localPos: Point = l.globalToLocal(new Point(stage.mouseX, stage.mouseY));
+			var p:Planet = PlanetUtils.findNearestPlanet(model,localPos.x, localPos.y );
 			if (p) {
 				model.txt.text = p.name;
 				model.moonsTxt.text = "";
@@ -236,7 +220,9 @@
 
 				}
 				else{
-					var p:Planet = findNearestPlanet();
+					var l: Sprite = model.layers[1];
+					var localPos: Point = l.globalToLocal(new Point(stage.mouseX, stage.mouseY));
+					var p:Planet = PlanetUtils.findNearestPlanet(model, localPos.x, localPos.y);
 					if (p && p != lastPlanet) {
 						model.txt.text = p.name;
 						model.moonsTxt.text = "";
@@ -268,10 +254,12 @@
 
 				try
 				{
+					//spaceShip.draw();
 					model.sun.draw();
 				}
 				catch(e:Error)
 				{
+					trace(e.message);
 					stage.removeEventListener(Event.ENTER_FRAME, update);
 				}
 				

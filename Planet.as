@@ -1,28 +1,22 @@
 ﻿package {
 	import flash.display.Stage;
-	public class Planet {
+	public class Planet extends Entity{
 
-		public var radius: Number;
-		public var color: uint;
+		
 		public var distanceFromParent: Number;
-		public var angle: Number;
-		public var speed: Number;
-		public var orbitingPlanets: Vector.<Planet> ;
+		
+		public var orbitingPlanets: Vector.<Entity> ;
 		public var showOrbit: Boolean = false;
 		public var numMoons: Number;
-		public var name: String;
-		public var x: Number;
-		public var y: Number;
+		
 		public var rings: Array;
 
-		public var model:Model;
-		public var stage:Stage;
-
+		
 
 		public function Planet(_model:Model, _stage:Stage) {
-			model = _model;
-			stage = _stage;
+			
 			// constructor code
+			super(_model, _stage);
 			
 		}
 
@@ -77,12 +71,12 @@
 
 			}
 			/**/
-			if (true
-				//Utils.isInScreen(x, y, model.layers, stage) ||
-				//Utils.isInScreen(x + radius, y, model.layers, stage) ||
-				//Utils.isInScreen(x - radius, y, model.layers, stage) ||
-				//Utils.isInScreen(x, y + radius, model.layers, stage) ||
-				//Utils.isInScreen(x, y - radius, model.layers, stage)
+			if (
+				Utils.isInScreen(x, y, model.layers, stage) ||
+				Utils.isInScreen(x + radius, y, model.layers, stage) ||
+				Utils.isInScreen(x - radius, y, model.layers, stage) ||
+				Utils.isInScreen(x, y + radius, model.layers, stage) ||
+				Utils.isInScreen(x, y - radius, model.layers, stage)
 
 			) {
 				model.g1.drawCircle(x, y, radius); // Draw the circle, assigning it a x position, y position, raidius.
@@ -93,7 +87,7 @@
 			var p: Planet;
 			if (orbitingPlanets) {
 				for ( i = 0; i < orbitingPlanets.length; i++) {
-					p = orbitingPlanets[i];
+					p = Planet(orbitingPlanets[i]);
 					p.draw(this);
 				}
 			}
@@ -119,7 +113,7 @@
 		public function addMoons(): void {
 			if (numMoons) {
 				if (!orbitingPlanets) {
-					orbitingPlanets = new Vector.<Planet> ();
+					orbitingPlanets = new Vector.<Entity> ();
 				}
 				var dist: Number = radius + 20;
 				for (var j: int = 0; j < numMoons; j++) {

@@ -22,7 +22,7 @@
 		public var layer05: Sprite = new Sprite();
 		public var layer1: Sprite = new Sprite();
 		public var debugLayer: Sprite = new Sprite();
-		public var allPlanets: Vector.<Planet> = new Vector.<Planet>;
+		public var allPlanets: Vector.<Entity> = new Vector.<Entity>;
 		public var tweenTo: Object = null;
 		public var layers: Array;
 		public var gs = layerS.graphics;
@@ -151,7 +151,7 @@
 			sun.lightRad = 9000;
 			sun.x= _stage.stageWidth / 2;
 			sun.y= _stage.stageHeight / 2;
-			sun.orbitingPlanets = new Vector.<Planet>();
+			sun.orbitingPlanets = new Vector.<Entity>();
 
 			sun.orbitingPlanets.push(mercury);
 			sun.orbitingPlanets.push(venus);

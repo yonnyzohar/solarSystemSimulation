@@ -7,7 +7,28 @@
 			// constructor code
 		}
 
-		
+		public static function findNearestPlanet(model:Model, mx:Number, my:Number):Planet
+		{
+			
+			var xPos: Number = mx; //(  ((stage.mouseX* currZoom) - l.x)  ); // l.x + -
+			var yPos: Number = my; //(  ((stage.mouseY* currZoom) - l.y) ); //l.y + -
+			var p: Planet;
+			var found: Boolean = false;
+			var i: int = 0;
+			for (i = 0; i < model.allPlanets.length; i++) {
+				if(model.allPlanets[i] is Planet) 
+				{
+					p = Planet(model.allPlanets[i]);
+					if (MathUtils.getDistance(p.x, p.y, xPos, yPos) < p.radius) {
+						found = true;
+						return p;
+					}
+				}
+				
+			}
+			return null;
+			
+		}
 
 		public static function populatePlanetsARrr(planet: Planet,model:Model, stage:Stage): void
 		{
@@ -18,7 +39,7 @@
 				for (var i: int = 0; i < planet.orbitingPlanets.length; i++)
 				{
 					//this will make planets move slower if they are farther away
-					var p: Planet = planet.orbitingPlanets[i];
+					var p: Planet = Planet(planet.orbitingPlanets[i]);
 					
 					//speed: Utils.getSpeed()
 					//distanceFromParent

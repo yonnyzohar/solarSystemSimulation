@@ -61,11 +61,11 @@
 			sendBeams(emptypSpaces, lightLineThickness, true)
 		}
 
-		public function gatherAllPlanetPositions(angles: Array, allPlanets: Vector.<Planet> ): void {
-			var p: Planet;
+		public function gatherAllPlanetPositions(angles: Array, allPlanets: Vector.<Entity> ): void {
+			var p: Entity;
 			////trace("gatherAllPlanetPositions",allPlanets.length );
 			for (var j: int = 0; j < allPlanets.length; j++) {
-				p = allPlanets[j];
+				p = Entity(allPlanets[j]);
 				////trace("checking", p.name);
 
 				if (p == this) {
@@ -114,9 +114,9 @@
 					angles.push(obj);
 				}
 
-				if (p.orbitingPlanets) {
+				if (p is Planet && Planet(p).orbitingPlanets) {
 					////trace("has moons");
-					gatherAllPlanetPositions(angles, p.orbitingPlanets);
+					gatherAllPlanetPositions(angles, Planet(p).orbitingPlanets);
 				}
 			}
 		}
