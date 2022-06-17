@@ -172,7 +172,7 @@
 			}
 			
 			//trace("before manipulations");
-			/**/
+			/*
 			for ( h = 0; h < bigArr.length; h++)
 			{
 				var a: Array = bigArr[h];
@@ -181,7 +181,7 @@
 					var pp:AngledBody = a[i];
 					//trace(h + " debug l",pp.left,"r", pp.right, "d",pp.dist);
 				}
-			}
+			}*/
 
 			//trace("fixing pverboard");
 			//see if we went overboard
@@ -254,16 +254,16 @@
 				}
 
 			}
-			
+			/*
 			for ( h = 0; h < bigArr.length; h++)
 			{
 				var a: Array = bigArr[h];
 				for (i = 0; i < a.length; i++)
 				{
 					var pp:AngledBody = a[i];
-					//trace(h + " debug l",pp.left,"r", pp.right, "d",pp.dist);
+					trace(h + " debug l",pp.left,"r", pp.right, "d",pp.dist);
 				}
-			}
+			}*/
 
 			//now that the list is sorted into clusters we can begin to sort out who is blocking whom
 			//we construct a new list which takes blockins into account

@@ -113,7 +113,7 @@
 			/*angle*/	Math.random() * (Math.PI * 2), 
 			/*name*/	"saturn",
 			/*numMoons*/12,
-			/*numRings*/ 7
+			/*numRings*/ 3
 			);
 
 
