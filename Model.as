@@ -4,6 +4,8 @@
 
 	public class Model {
 
+		//public static var tileSize: int = 100;
+
 		public static var maxDistance = 1000000;
 
 		public var mercury: Planet;
