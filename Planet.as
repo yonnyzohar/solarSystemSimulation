@@ -123,7 +123,7 @@
 					moon.color = 0xffffff * Math.random();
 					moon.distanceFromParent = dist;
 					moon.angle = Math.random() * (Math.PI * 2);
-					moon.speed = Utils.getSpeed(true);
+					moon.speed = (Model.maxDistance / moon.distanceFromParent) * 0.000001; //speed = Utils.getSpeed(true);
 					moon.name = "moon";
 
 					dist += (moon.radius * 4);

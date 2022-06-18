@@ -4,6 +4,7 @@
 
 		public var lightRad: Number;
 		private var firstTime:Boolean = true;
+		private var pool:Pool = Pool.getInstance();
 
 		public function Star(_model: Model, _stage: Stage) {
 			super(_model, _stage);
@@ -42,7 +43,7 @@
 			var lightLineThickness: Number = 6;
 			
 
-			//model.g0.lineStyle(lightLineThickness, color, 0.4);
+			model.g0.lineStyle(lightLineThickness, color, 0.4);
 			var angles: Array =[];
 
 			//

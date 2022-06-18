@@ -68,6 +68,38 @@
 			return str;
 		}
 
+		public static function getMapSize(model:Model): Object {
+			var left: Number = 100000000;
+			var right: Number = -100000000;
+			var top: Number = 1000000000;
+			var btm: Number = -1000000000;
+
+			for (var i: int = 0; i < model.allPlanets.length; i++) {
+				var e: Entity = model.allPlanets[i];
+				//trace(e.x);
+				if (e.x < left) {
+					left = e.x;
+				}
+				if (e.x > right) {
+					right = e.x;
+				}
+				if (e.y < top) {
+					top = e.y;
+				}
+				if (e.y > btm) {
+					btm = e.y;
+				}
+			}
+			return {
+				left: int(left),
+				right: int(right),
+				top: int(top),
+				btm: int(btm),
+				w: int(right - left),
+				h: int(btm - top)
+			};
+		}
+
 		
 	/*
 		public static function drawCircle(_x: Number, _y: Number, rad: Number, color: uint = 0xffffff): void {

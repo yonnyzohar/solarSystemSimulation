@@ -1,6 +1,7 @@
 ﻿package  {
 	import flash.display.Stage;
 	import flash.utils.*;
+	import flash.events.Event;
 
 	public class SpaceShip extends Entity{
 		
@@ -9,13 +10,15 @@
 		var distanceFromParent:Number;
 		var currPlanet:Planet;
 		private var mc:ShipMC;
+		private var smokePool:Pool = Pool.getInstance();
+		var smokeCounter:int = 0;
 
 		public function SpaceShip(_model:Model, _stage:Stage) {
 			super(_model, _stage);
 			
 			color = 0xffffff * Math.random();
 			radius = 20;
-			speed = 10;
+			speed = 5;
 			mc = new ShipMC();
 			mc.x = x;
 			mc.y = y;
@@ -66,7 +69,8 @@
 
 		public function moveTo(p:Planet):void
 		{
-			trace("going to " + p.name);
+			//trace("going to " + p.name);
+			smokeCounter = 0;
 			var w:Number = p.x - x;
 			var h:Number = p.y - y;
 			var distance:Number = MathUtils.getDistance(x, y, p.x, p.y);
@@ -94,6 +98,7 @@
 
 			if(moveObj)
 			{
+				smokeCounter++;
 				var myP:Planet = moveObj.p
 				var w:Number = myP.x - x;
 				var h:Number = myP.y - y;
@@ -149,7 +154,20 @@
 				var sAngle:Number = MathUtils.getAngle(nextX, nextY, x, y) * 180 / Math.PI;
 
 				y = nextY;
-				x = nextX;	
+				x = nextX;
+				if(smokeCounter % 4 == 0)
+				{
+					var smoke:Smoke = Smoke(smokePool.get("smoke"));
+					smoke.gotoAndPlay(1);
+					model.layer1.addChild(smoke);
+					smoke.x = x;
+					smoke.y = y;
+					smoke.play();
+					smoke.addEventListener("EndOfAnimation", onStep1Complete);
+				}
+				
+				
+
 				mc.x = x;
 				mc.y = y;	
 				mc.rotation = sAngle;
@@ -185,6 +203,14 @@
 				model.g1.endFill();
 			}
 			*/
+		}
+
+		private function onStep1Complete(event:Event=null):void
+		{
+			var smoke:Smoke = Smoke(event.target);
+			smoke.removeEventListener("EndOfAnimation", onStep1Complete);
+			model.layer1.removeChild(smoke);
+			smokePool.putBack(smoke, "smoke");
 		}
 
 	}

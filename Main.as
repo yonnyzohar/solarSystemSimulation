@@ -1,4 +1,8 @@
-﻿package {
+﻿//pool for angles
+//pool for trail
+//space partition for planets
+
+package {
 	import flash.display.*;
 	import flash.geom.*;
 	import flash.events.*;
@@ -9,10 +13,8 @@
 		
 		var yonny = true;
 
-		var spaceShip1: SpaceShip;
-		var spaceShip2: SpaceShip;
-		var spaceShip3: SpaceShip;
-		var spaceShip4: SpaceShip;
+		var spaceShips: Array = [];
+		
 		
 
 		public function Main() {
@@ -53,30 +55,29 @@
 			stage.addEventListener(MouseEvent.MOUSE_UP, onUp);
 			stage.addEventListener(MouseEvent.CLICK, onClick);
 			stage.addEventListener(MouseEvent.MOUSE_WHEEL, zooom);
+			
+			model.sun.draw();
+			var obj:Object = Utils.getMapSize(model);
+			var w:int = obj.w;
+			var h:int = obj.h;
+			var left:int = obj.left;
+			var top:int = obj.top;
 
-			spaceShip1 = new SpaceShip(model, stage);
-			spaceShip1.x = 0;
-			spaceShip1.y = 0;
-			model.allPlanets.push(spaceShip1);
+			var pool:Pool = Pool.getInstance();
+			var numShips:int = 10;
+			//_numElements : int, _CLS:Class, type:String
+			pool.init(50 * numShips, Smoke, "smoke");
+			pool.init(100, AngledBody, "angle");
+			
 
-			spaceShip2 = new SpaceShip(model, stage);
-			spaceShip2.x = 0;
-			spaceShip2.y = 0;
-			model.allPlanets.push(spaceShip2);
-
-			spaceShip3 = new SpaceShip(model, stage);
-			spaceShip3.x = 0;
-			spaceShip3.y = 0;
-			model.allPlanets.push(spaceShip3);
-
-			spaceShip4 = new SpaceShip(model, stage);
-			spaceShip4.x = 0;
-			spaceShip4.y = 0;
-
-			model.allPlanets.push(spaceShip4);
-
-
-
+			for(var i:int = 0; i < numShips; i++)
+			{
+				var s:SpaceShip = new SpaceShip(model, stage);
+				s.x = (Math.random() * w) + left;
+				s.y = (Math.random() * h) + top;
+				model.allPlanets.push(s);
+				spaceShips.push(s);
+			}
 
 		}
 
@@ -274,12 +275,15 @@
 			model.g1.clear();
 			model.g1.lineStyle(0.1, 0x000000);
 
-			try {
-				spaceShip1.draw();
-				spaceShip2.draw();
-				spaceShip3.draw();
-				spaceShip4.draw();
+			
+				for(var i:int = 0; i < spaceShips.length; i++)
+				{
+					var s:SpaceShip = spaceShips[i];
+					s.draw();
+				}
 				model.sun.draw();
+			try {
+
 
 			} catch (e: Error) {
 				trace(e.message);
@@ -304,37 +308,7 @@
 
 /*
 
-function getMapSize(): Object {
-			var left: Number = 100000000;
-			var right: Number = -100000000;
-			var top: Number = 1000000000;
-			var btm: Number = -1000000000;
 
-			for (var i: int = 0; i < model.allPlanets.length; i++) {
-				var e: Entity = model.allPlanets[i];
-				//trace(e.x);
-				if (e.x < left) {
-					left = e.x;
-				}
-				if (e.x > right) {
-					right = e.x;
-				}
-				if (e.y < top) {
-					top = e.y;
-				}
-				if (e.y > btm) {
-					btm = e.y;
-				}
-			}
-			return {
-				left: int(left),
-				right: int(right),
-				top: int(top),
-				btm: int(btm),
-				w: int(right - left),
-				h: int(btm - top)
-			};
-		}
 
 
 				var map: Array = [
