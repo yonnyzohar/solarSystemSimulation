@@ -12,6 +12,7 @@
 		private var mc:ShipMC;
 		private var smokePool:Pool = Pool.getInstance();
 		var smokeCounter:int = 0;
+		public var gotMyAngle:Boolean = false;
 
 		public function SpaceShip(_model:Model, _stage:Stage) {
 			super(_model, _stage);
@@ -99,6 +100,7 @@
 			//model.g1.beginFill(color, 1);
 			var i;
 			var j;
+			gotMyAngle = false;
 
 			if(moveObj)
 			{
@@ -159,7 +161,7 @@
 										var mag:Number = 100;
 										if(p.isMoon)
 										{
-											mag = 0.1;
+											mag = 0.2;
 										}
 										fX -= ((cos * speed)  / (d - rad)) * mag ;//
 										fY -= ((sin * speed)  / (d - rad)) * mag ; // 

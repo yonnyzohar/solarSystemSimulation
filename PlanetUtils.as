@@ -9,7 +9,8 @@
 
 	
 		public static function createPartition(model:Model, left:int, top:int):void
-		{
+		{	
+			Model.partition = {};
 			for (var i:int = 0; i < model.allPlanets.length; i++) {
 				if(model.allPlanets[i] is Planet)
 				{

@@ -64,7 +64,7 @@
 
 			mercury = new Planet(this, stage);
 			mercury.init(
-			/*radius*/	40, 
+			/*radius*/	50, 
 			/*color*/	0xffffff * Math.random(),
 			/*distanceFromParent*/	500, 
 			/*angle*/	Math.random() * (Math.PI * 2), 
@@ -75,7 +75,7 @@
 
 			venus = new Planet(this, stage);
 			venus.init(
-			/*radius*/	40, 
+			/*radius*/	50, 
 			/*color*/	0xffffff * Math.random(),
 			/*distanceFromParent*/	dist, 
 			/*angle*/	Math.random() * (Math.PI * 2), 
@@ -185,7 +185,7 @@
 			sun.orbitingPlanets.push(jupiter);
 			sun.orbitingPlanets.push(saturn);
 			sun.orbitingPlanets.push(uranus);
-			sun.orbitingPlanets.push(neptune); //Utils.duplicate
+			sun.orbitingPlanets.push(neptune); 
 			
 			
 		}

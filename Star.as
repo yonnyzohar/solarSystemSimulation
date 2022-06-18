@@ -48,7 +48,7 @@
 			var angles: Array =[];
 
 			//
-			gatherAllPlanetPositions(angles, model.allPlanets);
+			gatherAllPlanetPositions(angles, model.allPlanets, true);
 			////trace("angles before manipulations",angles.length );
 
 			var emptypSpaces = [];
@@ -63,7 +63,7 @@
 			sendBeams(emptypSpaces, lightLineThickness, true)
 		}
 
-		public function gatherAllPlanetPositions(angles: Array, allPlanets: Vector.<Entity> ): void {
+		public function gatherAllPlanetPositions(angles: Array, allPlanets: Vector.<Entity> , topHeirarchy:Boolean = false): void {
 			var p: Entity;
 			////trace("gatherAllPlanetPositions",allPlanets.length );
 			for (var j: int = 0; j < allPlanets.length; j++) {
@@ -74,6 +74,25 @@
 					////trace("skipping", name);
 					continue;
 				}
+				//we dont want a moon appearing twice in the angles array
+				if(p is Planet && Planet(p).isMoon && topHeirarchy)
+				{
+					continue;
+				}
+
+				//dont grab spaceships twice - find better way to do this
+				if(p is SpaceShip )
+				{
+					if (SpaceShip(p).gotMyAngle == false)
+					{
+						SpaceShip(p).gotMyAngle = true;
+					}
+					else{
+						continue;
+					}
+					
+				}
+
 				//go over all planets and get their angle to the sun
 				//get center angle, angle from left side and angle from right side
 				//we need to t figure out if they are blocking planets behind them
@@ -118,7 +137,7 @@
 
 				if (p is Planet && Planet(p).orbitingPlanets) {
 					////trace("has moons");
-					gatherAllPlanetPositions(angles, Planet(p).orbitingPlanets);
+					gatherAllPlanetPositions(angles, Planet(p).orbitingPlanets, false);
 				}
 			}
 		}
