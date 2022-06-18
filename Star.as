@@ -77,7 +77,7 @@
 				//we dont want a moon appearing twice in the angles array
 				if(p is Planet && Planet(p).isMoon && topHeirarchy)
 				{
-					continue;
+					//continue;
 				}
 
 				//dont grab spaceships twice - find better way to do this
@@ -137,7 +137,7 @@
 
 				if (p is Planet && Planet(p).orbitingPlanets) {
 					////trace("has moons");
-					gatherAllPlanetPositions(angles, Planet(p).orbitingPlanets, false);
+					//gatherAllPlanetPositions(angles, Planet(p).orbitingPlanets, false);
 				}
 			}
 		}

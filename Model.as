@@ -12,7 +12,7 @@
 		public static var mapLeft:int;
 		public static var mapTop:int;
 
-		public static var numShips:int = 10;
+		public static var numShips:int = 15;
 
 		public static var maxDistance = 1000000;
 

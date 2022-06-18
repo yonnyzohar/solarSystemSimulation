@@ -79,8 +79,8 @@ package {
 			for(var i:int = 0; i < Model.numShips; i++)
 			{
 				var s:SpaceShip = new SpaceShip(model, stage);
-				s.x = (Math.random() * Model.mapW) + Model.mapLeft;
-				s.y = (Math.random() * Model.mapH) + Model.mapTop;
+				s.x =  Model.mapW + Model.mapLeft;
+				s.y =  Model.mapH + Model.mapTop;
 				model.allPlanets.push(s);
 				spaceShips.push(s);
 			}
