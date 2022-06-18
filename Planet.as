@@ -2,12 +2,13 @@
 	import flash.display.Stage;
 	public class Planet extends Entity{
 
-		
+		public static var moonIndex:int = 0;
 		public var distanceFromParent: Number;
 		
 		public var orbitingPlanets: Vector.<Entity> ;
 		public var showOrbit: Boolean = false;
 		public var numMoons: Number;
+		public var isMoon:Boolean = false;
 		
 		public var rings: Array;
 
@@ -20,6 +21,11 @@
 			
 		}
 
+		public static function nextMoonIndex():int
+		{
+			Planet.moonIndex++;
+			return Planet.moonIndex;
+		}
 		public function init(_radius:Number, _color:uint, _distanceFromParent:Number, _angle:Number, _name:String, _numMoons:Number = 0, _numRings:Number = 0):void
 		{
 			radius= _radius;
@@ -119,16 +125,18 @@
 				for (var j: int = 0; j < numMoons; j++) {
 
 					var moon: Planet = new Planet(model, stage);
-					moon.radius = (Math.random() * 10) + 4;
+					moon.radius = Math.max(radius * (Math.random() - 0.3), radius * 0.2);
 					moon.color = 0xffffff * Math.random();
 					moon.distanceFromParent = dist;
 					moon.angle = Math.random() * (Math.PI * 2);
 					moon.speed = (Model.maxDistance / moon.distanceFromParent) * 0.000001; //speed = Utils.getSpeed(true);
-					moon.name = "moon";
+					moon.name = "moon" + Planet.nextMoonIndex();
+					moon.isMoon = true;
 
 					dist += (moon.radius * 4);
 
 					orbitingPlanets.push(moon);
+					model.allPlanets.push(moon);
 				}
 			}
 

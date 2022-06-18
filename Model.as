@@ -4,7 +4,15 @@
 
 	public class Model {
 
-		//public static var tileSize: int = 100;
+		public static var partition:Object = {};
+		public static var tileW:int;
+		public static var tileH:int;
+		public static var mapW:int;
+		public static var mapH:int ;
+		public static var mapLeft:int;
+		public static var mapTop:int;
+
+		public static var numShips:int = 10;
 
 		public static var maxDistance = 1000000;
 
@@ -52,98 +60,113 @@
 			layers = [layerS, layerT, layer0, layer05, layer1, debugLayer];
 			stage = _stage;
 			
-
+			var dist:int = 500;
 
 			mercury = new Planet(this, stage);
 			mercury.init(
-			/*radius*/	30, 
+			/*radius*/	40, 
 			/*color*/	0xffffff * Math.random(),
 			/*distanceFromParent*/	500, 
 			/*angle*/	Math.random() * (Math.PI * 2), 
 			/*name*/	"mercury"
 			);
 			
-			
+			dist += (mercury.radius * 10);
 
 			venus = new Planet(this, stage);
 			venus.init(
-			/*radius*/	30, 
+			/*radius*/	40, 
 			/*color*/	0xffffff * Math.random(),
-			/*distanceFromParent*/	1000, 
+			/*distanceFromParent*/	dist, 
 			/*angle*/	Math.random() * (Math.PI * 2), 
 			/*name*/	"venus"
 			);
 			
+			dist += (venus.radius * 10);
 
 			earth = new Planet(this, stage);
 			earth.init(
-			/*radius*/	30, 
+			/*radius*/	50, 
 			/*color*/	0xffffff * Math.random(),
-			/*distanceFromParent*/	1500, 
+			/*distanceFromParent*/	dist, 
 			/*angle*/	Math.random() * (Math.PI * 2), 
 			/*name*/	"earth",
-			/*numMoons*/4
+			/*numMoons*/1
 			);
+
+			dist += (earth.radius * 10);
 
 
 			mars = new Planet(this, stage);
 			mars.init(
-			/*radius*/	20, 
+			/*radius*/	35, 
 			/*color*/	0xffffff * Math.random(),
-			/*distanceFromParent*/	2000, 
+			/*distanceFromParent*/	dist, 
 			/*angle*/	Math.random() * (Math.PI * 2), 
 			/*name*/	"mars",
-			/*numMoons*/2
+			/*numMoons*/1
 			);
+
+			dist += (mars.radius * 10);
 			
 
 			jupiter = new Planet(this, stage);
 			jupiter.init(
-			/*radius*/	100, 
+			/*radius*/	200, 
 			/*color*/	0xffffff * Math.random(),
-			/*distanceFromParent*/	2500, 
+			/*distanceFromParent*/	dist, 
 			/*angle*/	Math.random() * (Math.PI * 2), 
 			/*name*/	"jupiter",
-			/*numMoons*/4
+			/*numMoons*/5
 			);
+
+			dist += (jupiter.radius * 10);
 
 			saturn = new Planet(this, stage);
 			saturn.init(
-			/*radius*/	150, 
+			/*radius*/	180, 
 			/*color*/	0xffffff * Math.random(),
-			/*distanceFromParent*/	3000, 
+			/*distanceFromParent*/	dist, 
 			/*angle*/	Math.random() * (Math.PI * 2), 
 			/*name*/	"saturn",
-			/*numMoons*/12,
-			/*numRings*/ 3
+			/*numMoons*/3,
+			/*numRings*/ 8
 			);
+
+			dist += (saturn.radius * 10);
 
 
 
 			uranus = new Planet(this, stage);
 			uranus.init(
-			/*radius*/	30, 
+			/*radius*/	80, 
 			/*color*/	0xffffff * Math.random(),
-			/*distanceFromParent*/	3500, 
+			/*distanceFromParent*/	dist, 
 			/*angle*/	Math.random() * (Math.PI * 2), 
-			/*name*/	"uranus"
+			/*name*/	"uranus",
+			4
 			);
+
+			dist += (uranus.radius * 10);
 			
 
 			neptune = new Planet(this, stage);
 			neptune.init(
-			/*radius*/	30, 
+			/*radius*/	70, 
 			/*color*/	0xffffff * Math.random(),
-			/*distanceFromParent*/	4000, 
+			/*distanceFromParent*/	dist, 
 			/*angle*/	Math.random() * (Math.PI * 2), 
 			/*name*/	"neptune",
-			10
+			3,
+			2
 			);
+
+			dist += (neptune.radius * 10);
 			
 
 			sun = new Star(this, stage);
 			sun.init(
-			/*radius*/	200, 
+			/*radius*/	300, 
 			/*color*/	0xffff00,
 			/*distanceFromParent*/	10000, 
 			/*angle*/	0, 

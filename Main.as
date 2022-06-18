@@ -1,6 +1,6 @@
-﻿//pool for angles
-//pool for trail
-//space partition for planets
+﻿//pool for angles :)
+//pool for trail :)
+//space partition for planets :)
 
 package {
 	import flash.display.*;
@@ -10,11 +10,9 @@ package {
 	public class Main extends MovieClip {
 		var model: Model;
 		var lastPlanet: Planet = null;
-		
 		var yonny = true;
-
 		var spaceShips: Array = [];
-		
+
 		
 
 		public function Main() {
@@ -56,25 +54,33 @@ package {
 			stage.addEventListener(MouseEvent.CLICK, onClick);
 			stage.addEventListener(MouseEvent.MOUSE_WHEEL, zooom);
 			
+			var pool:Pool = Pool.getInstance();
+			pool.init(1000, AngledBody, "angle");
+
 			model.sun.draw();
 			var obj:Object = Utils.getMapSize(model);
-			var w:int = obj.w;
-			var h:int = obj.h;
-			var left:int = obj.left;
-			var top:int = obj.top;
+			Model.mapW = obj.w;
+			Model.mapH = obj.h;
+			Model.mapLeft = obj.left;
+			Model.mapTop = obj.top;
 
-			var pool:Pool = Pool.getInstance();
-			var numShips:int = 10;
+			//if want to split the map up to 4 X 4
+			var n:int = 8;
+			Model.tileW = Model.mapW / n;
+			Model.tileH = Model.mapH / n;
+
+			
+			
 			//_numElements : int, _CLS:Class, type:String
-			pool.init(50 * numShips, Smoke, "smoke");
-			pool.init(100, AngledBody, "angle");
+			pool.init(50 * Model.numShips, Smoke, "smoke");
+			
 			
 
-			for(var i:int = 0; i < numShips; i++)
+			for(var i:int = 0; i < Model.numShips; i++)
 			{
 				var s:SpaceShip = new SpaceShip(model, stage);
-				s.x = (Math.random() * w) + left;
-				s.y = (Math.random() * h) + top;
+				s.x = (Math.random() * Model.mapW) + Model.mapLeft;
+				s.y = (Math.random() * Model.mapH) + Model.mapTop;
 				model.allPlanets.push(s);
 				spaceShips.push(s);
 			}
@@ -122,8 +128,8 @@ package {
 				model.currZoom += model.zoomAmount;
 			} else if (event.delta < 0) {
 				model.currZoom -= model.zoomAmount;
-				if (model.currZoom <= 0.1) {
-					model.currZoom = 0.1;
+				if (model.currZoom <= 0.05) {
+					model.currZoom = 0.05;
 					proceed = false;
 				}
 			}
@@ -183,7 +189,7 @@ package {
 		function update(e: Event): void {
 			var i: int = 0;
 			var l: Sprite;
-
+			PlanetUtils.createPartition(model, Model.mapLeft, Model.mapTop);
 
 			if (model.tweenTo != null) {
 
@@ -269,6 +275,9 @@ package {
 			}
 
 			
+			
+			try {
+
 			model.g0.clear();
 			model.g05.lineStyle(0.1, 0x000000);
 			model.g05.clear();
@@ -282,9 +291,6 @@ package {
 					s.draw();
 				}
 				model.sun.draw();
-			try {
-
-
 			} catch (e: Error) {
 				trace(e.message);
 				stage.removeEventListener(Event.ENTER_FRAME, update);
@@ -305,68 +311,3 @@ package {
 
 }
 
-
-/*
-
-
-
-
-				var map: Array = [
-				
-					[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-					[0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
-					[0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
-					[0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
-					[0, 0, 0, 0, 0, 1, 1, 1, 0, 0],
-					[0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
-					[0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
-					[0, 1, 0, 0, 0, 0, 1, 1, 0, 0],
-					[0, 1, 0, 0, 0, 0, 1, 1, 0, 0],
-					[0, 1, 0, 0, 0, 0, 0, 1, 0, 0]
-					
-				];
-
-				var mapSize: Object = getMapSize();
-				
-				var size:int = Math.max(mapSize.w, mapSize.h);
-				var tilesPerRow:int = size / Model.tileSize;
-				for(var i:int = 0; i < tilesPerRow; i++)
-				{
-					map.push([]);
-					for(var j:int = 0; j < tilesPerRow; j++)
-					{
-						map[i][j] = 0;
-					}
-				}
-
-				for (i = 0; i < model.allPlanets.length; i++) {
-					var e1: Entity = model.allPlanets[i];
-					var _x = int(e1.x);
-					var _y = int(e1.y);
-					var radius:int = e1.radius;
-					var numTiles:int = radius / Model.tileSize;
-					var col:int = (_x - mapSize.left) / Model.tileSize;
-					var row:int = (_y - mapSize.top) / Model.tileSize;
-
-					for(var r:int = row - numTiles; r < row + numTiles; r++)
-					{
-						for(var c:int = col - numTiles; c < col + numTiles; c++)
-						{
-							if(map[r] != null && map[r][c] != null)
-							{
-								map[r][c] = 1;
-							}
-						}
-					}
-					
-				}
-			
-				
-				trace(mapSize.left, mapSize.right, mapSize.top, mapSize.btm, mapSize.w, mapSize.h);
-				var grid: Array = aStar.createNodesBoard(map, 0);
-				var startNode: Object = grid[0][0];
-				var endNode: Object = grid[tilesPerRow-1][tilesPerRow-1];
-
-				var pathList: Array = aStar.getPath(grid, startNode, endNode);
-				aStar.printPath(map, pathList);
-				*/

@@ -51,9 +51,13 @@
 						var p:Planet = Planet(model.allPlanets[rnd]);
 						if(currPlanet != p)
 						{
-							moveTo(p);
-							found = true;
-							return;
+							if(!p.isMoon)
+							{
+								moveTo(p);
+								found = true;
+								return;
+							}
+							
 						}
 					}
 					
@@ -123,8 +127,57 @@
 
 				var fX:Number = 0;
 				var fY:Number = 0;
+				var num:int = 0;
+
+				
+
+				var row:int = (x - Model.mapLeft) / Model.tileW;
+				var col:int = (y - Model.mapTop) / Model.tileH;
+				
+				for(var r:int = -1; r <= 1; r++)
+				{
+					for(var c:int = -1; c <= 1; c++)
+					{
+						var name:String = String(row+r) + "_" + String(col+c);
+						var block:Object = Model.partition[name];
+						if(block)
+						{
+							for(var k:String in block)
+							{
+								var e:Entity = block[k];
+								if(e is Planet)
+								{
+									var p:Planet = Planet(e);
+									if(p != myP)
+									{
+										var rad:Number = p.radius;
+										var d:Number = MathUtils.getDistance(x, y, p.x, p.y);
+										var sAngle:Number = MathUtils.getAngle(x, y, p.x, p.y );
+										var cos:Number = Math.cos(sAngle);
+										var sin:Number = Math.sin(sAngle);
+										num++;
+										var mag:Number = 100;
+										if(p.isMoon)
+										{
+											mag = 0.1;
+										}
+										fX -= ((cos * speed)  / (d - rad)) * mag ;//
+										fY -= ((sin * speed)  / (d - rad)) * mag ; // 
+									}
+								}
+
+							}
+						}
+					}
+				}
+				
+				/**/
+				
+				
 
 				//now move me
+				///////////////////////
+				/*
 				for(var i:int = 0; i < model.allPlanets.length; i++)
 				{
 					if(model.allPlanets[i] is Planet)
@@ -137,15 +190,16 @@
 							var sAngle:Number = MathUtils.getAngle(x, y, p.x, p.y );
 							var c:Number = Math.cos(sAngle);
 							var s:Number = Math.sin(sAngle);
-
+							num++;
 							fX -= ((c * speed)  / (d - rad)) * 100 ;//
 							fY -= ((s * speed)  / (d- rad )) * 100 ; // 
-							
-
 						}
 					}
-					
-				}
+				}*/
+
+				//trace(num);
+
+				///////////////////////
 
 				//trace(fX, fY);
 				nextX -= fX;

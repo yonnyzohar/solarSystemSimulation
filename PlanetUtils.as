@@ -7,6 +7,25 @@
 			// constructor code
 		}
 
+	
+		public static function createPartition(model:Model, left:int, top:int):void
+		{
+			for (var i:int = 0; i < model.allPlanets.length; i++) {
+				if(model.allPlanets[i] is Planet)
+				{
+					var planet: Planet = Planet(model.allPlanets[i]);
+					var row:int = (planet.x - left) / Model.tileW;
+					var col:int = (planet.y - top) / Model.tileH;
+					var name:String = String(row) + "_" + String(col);
+					if(!Model.partition[name])
+					{
+						Model.partition[name] = {};
+					}
+					Model.partition[name][planet.name] = planet;
+				}
+			}
+		}
+
 		public static function findNearestPlanet(model:Model, mx:Number, my:Number):Planet
 		{
 			

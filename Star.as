@@ -13,6 +13,7 @@
 
 		override public function draw(parentObj: Planet = null): void {
 			super.draw(parentObj);
+			pool.clear("angle");
 			handleLight();
 			//LightUtils.handleLight(this, model)
 		}
@@ -43,7 +44,7 @@
 			var lightLineThickness: Number = 6;
 			
 
-			model.g0.lineStyle(lightLineThickness, color, 0.4);
+			//model.g0.lineStyle(lightLineThickness, color, 0.4);
 			var angles: Array =[];
 
 			//
@@ -104,7 +105,7 @@
 
 					//trace(leftAngleToSun, centerAngleToSun, rightAngleToSun);
 
-					var obj: AngledBody = new AngledBody();
+					var obj: AngledBody = pool.get("angle");//new AngledBody();
 					obj.left =  Math.min(leftAngleToSun, rightAngleToSun);
 					obj.right= Math.max(leftAngleToSun, rightAngleToSun);
 					obj.dist= int(distanceToSun);
@@ -219,7 +220,7 @@
 							var index = Math.max(i - 1, 0);
 							//trace("		element is closer");
 
-							 obj = new AngledBody();
+							 obj = pool.get("angle");//new AngledBody();
 							obj.left =  smallestLeft;
 							obj.right= element.left;
 							obj.dist= lastElement.dist;
@@ -232,7 +233,7 @@
 						//current element is bigger than 
 						if (element.dist < lastElement.dist) {
 
-							obj = new AngledBody();
+							obj = pool.get("angle");//new AngledBody();
 							obj.left =  smallestLeft;
 							obj.right= element.left;
 							obj.dist= lastElement.dist;
@@ -241,7 +242,7 @@
 							bigArr[0].unshift(obj);
 						} else {
 
-							obj = new AngledBody();
+							obj = pool.get("angle");//new AngledBody();
 							obj.left =  smallestLeft;
 							obj.right= r;
 							obj.dist= lastElement.dist;
@@ -273,7 +274,7 @@
 			for (h = 0; h < bigArr.length; h++) {
 				tmp[h] = [];
 				var a: Array = bigArr[h];
-				obj = new AngledBody();
+				obj = pool.get("angle");//new AngledBody();
 				obj.left =  a[0].left;
 				obj.right= a[0].right;
 				obj.dist = a[0].dist;
@@ -292,7 +293,7 @@
 							obj.added = true;
 							var r = obj.right;
 							tmp[h].push(obj);
-							obj = new AngledBody();
+							obj = pool.get("angle");//new AngledBody();
 							obj.left =  r;
 							obj.right= currP.right;
 							obj.dist= currP.dist;
@@ -314,7 +315,7 @@
 							tmp[h].push(obj);
 							//trace("2 "+Utils.printObj(obj));
 
-							obj = new AngledBody();
+							obj = pool.get("angle");//new AngledBody();
 							obj.left =  currP.left;
 							obj.right= currP.right;
 							obj.dist= currP.dist;
@@ -327,7 +328,7 @@
 							var l = obj.left;
 							var r = obj.right;
 							var d = obj.dist;
-							var orig:AngledBody =  new AngledBody();
+							var orig:AngledBody =  pool.get("angle");//new AngledBody();
 							orig.left= l;
 							orig.right= r;
 							orig.dist= d;
@@ -337,7 +338,7 @@
 							tmp[h].push(obj);
 							//trace("4 "+Utils.printObj(obj));
 
-							obj = new AngledBody();
+							obj = pool.get("angle");//new AngledBody();
 							obj.left =  currP.left;
 							obj.right= currP.right;
 							obj.dist= currP.dist;
@@ -347,7 +348,7 @@
 							tmp[h].push(obj);
 							//trace("5 "+Utils.printObj(obj));
 
-							obj = new AngledBody();
+							obj = pool.get("angle");//new AngledBody();
 							obj.left =  currP.right;
 							obj.right= orig.right;
 							obj.dist= orig.dist;
@@ -385,7 +386,7 @@
 					if (a[0].left != 0) 
 					{
 
-						o = new AngledBody();
+						o = pool.get("angle");//new AngledBody();
 						o.left  =  0;
 						o.right = a[0].left;
 						o.dist  = lightRad;
@@ -393,12 +394,12 @@
 						
 						empties.push(o);
 
-						o = new AngledBody();
+						o = pool.get("angle");//new AngledBody();
 						o.left =  a[a.length - 1].right;
 						o.dist = lightRad;
 
 					} else {
-						o = new AngledBody();
+						o = pool.get("angle");//new AngledBody();
 						o.left =  a[a.length - 1].right;
 						o.dist = lightRad;
 					}
@@ -409,7 +410,7 @@
 					o.right = a[0].left;
 					empties.push(o);
 
-					o = new AngledBody();
+					o = pool.get("angle");//new AngledBody();
 					o.left =  a[a.length - 1].right;
 					o.dist = lightRad;
 				}
