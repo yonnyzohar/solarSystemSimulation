@@ -19,14 +19,15 @@
 			return instance;
 		}
 
-		public function init(_numElements : int, _CLS:Class, type:String):void 
+		public function init(_numElements : int, _CLS:Class, type:String, resetable:Boolean = false):void 
 		{
 			
 			dict[type] = {
 				curIndex : 0,
 				numElements : _numElements,
 				CLS : CLS,
-				pool : []
+				pool : [],
+				resetable:resetable
 			};
 
 			var CLS:Class = _CLS;
@@ -63,7 +64,7 @@
 				{
 					throw new Error("pool " + type + " limit exceeded " + obj.curIndex);
 				}
-				if(e.reset)
+				if(obj.resetable)
 				{
 					e.reset();
 				}

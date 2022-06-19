@@ -12,9 +12,9 @@
 		{	
 			Model.partition = {};
 			for (var i:int = 0; i < model.allPlanets.length; i++) {
-				if(model.allPlanets[i] is Planet)
+				//if(model.allPlanets[i] is Planet)
 				{
-					var planet: Planet = Planet(model.allPlanets[i]);
+					var planet: Entity = Entity(model.allPlanets[i]);
 					var row:int = (planet.x - left) / Model.tileW;
 					var col:int = (planet.y - top) / Model.tileH;
 					var name:String = String(row) + "_" + String(col);
@@ -27,26 +27,51 @@
 			}
 		}
 
-		public static function findNearestPlanet(model:Model, mx:Number, my:Number):Planet
+		public static function findNearestPlanet(model:Model, mx:Number, my:Number):Entity
 		{
 			
 			var xPos: Number = mx; //(  ((stage.mouseX* currZoom) - l.x)  ); // l.x + -
 			var yPos: Number = my; //(  ((stage.mouseY* currZoom) - l.y) ); //l.y + -
-			var p: Planet;
+			var shortestP:Entity;
+			var shortestDist:Number = 10000000;
 			var found: Boolean = false;
 			var i: int = 0;
-			for (i = 0; i < model.allPlanets.length; i++) {
-				if(model.allPlanets[i] is Planet) 
+
+
+			var row:int = (xPos - Model.mapLeft) / Model.tileW;
+			var col:int = (yPos - Model.mapTop) / Model.tileH;
+			
+			for(var r:int = -2; r <= 2; r++)
+			{
+				for(var c:int = -2; c <= 2; c++)
 				{
-					p = Planet(model.allPlanets[i]);
-					if (MathUtils.getDistance(p.x, p.y, xPos, yPos) < p.radius) {
-						found = true;
-						return p;
+					var name:String = String(row+r) + "_" + String(col+c);
+					var block:Object = Model.partition[name];
+					if(block)
+					{
+						for(var k:String in block)
+						{
+							var e:Entity = block[k];
+							//if(e is Planet)
+							{
+								//p = Planet(e);
+								var d:Number = MathUtils.getDistance(xPos, yPos , e.x, e.y);
+								if (d < e.radius) {
+									found = true;
+									return e;
+								}
+								if(d < shortestDist)
+								{
+									shortestDist = d;
+									shortestP = e;
+								}
+							}
+						}
 					}
 				}
-				
 			}
-			return null;
+			
+			return shortestP;
 			
 		}
 

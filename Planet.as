@@ -77,16 +77,31 @@
 
 			}
 			/**/
-			if (
-				Utils.isInScreen(x, y, model.layers, stage) ||
+			if (Utils.isInScreen(x, y, model.layers, stage) ||
 				Utils.isInScreen(x + radius, y, model.layers, stage) ||
 				Utils.isInScreen(x - radius, y, model.layers, stage) ||
 				Utils.isInScreen(x, y + radius, model.layers, stage) ||
 				Utils.isInScreen(x, y - radius, model.layers, stage)
+				
 
 			) {
 				model.g1.drawCircle(x, y, radius); // Draw the circle, assigning it a x position, y position, raidius.
 				model.g1.endFill();
+
+				if (rings) {
+					var thickness:int = 10;
+					var startDist: Number = radius + (radius * 0.4);
+					for (i = 0; i < rings.length; i++) {
+						var color: uint = rings[i];
+						model.g05.lineStyle(thickness, color, .5);
+
+						//for (j = 0; j < 15; j++) {
+							model.g05.drawCircle(x, y, startDist);
+							model.g05.endFill();
+						//}
+						startDist += thickness;
+					}
+				}
 			}
 
 
@@ -100,20 +115,7 @@
 
 
 
-			if (rings) {
-				
-				var startDist: Number = radius + (radius * 0.4);
-				for (i = 0; i < rings.length; i++) {
-					var color: uint = rings[i];
-					model.g05.lineStyle(0.1, color, .5);
-
-					for (j = 0; j < 15; j++) {
-						model.g05.drawCircle(x, y, startDist + j);
-						model.g05.endFill();
-					}
-					startDist += j;
-				}
-			}
+			
 		}
 
 		public function addMoons(): void {

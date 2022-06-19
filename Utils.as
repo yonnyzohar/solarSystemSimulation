@@ -25,7 +25,7 @@
 		}
 	
 
-		public static function setFollow(p: Planet, firstTime: Boolean, stage: Stage,model:Model): void {
+		public static function setFollow(p: Entity, firstTime: Boolean, stage: Stage,model:Model): void {
 			var l: Sprite = model.layers[1];
 			var i: int = 0;
 			////trace("hit ", p.name);
@@ -38,7 +38,10 @@
 				fY -= (p.y * model.currZoom);
 				fX += (stage.stageWidth / 2); //
 				fY += (stage.stageHeight / 2); //
-				p.showOrbit = true;
+				if(p is Planet)
+				{
+					Planet(p).showOrbit = true;
+				}
 				model.tweenTo = {
 					planet: p,
 					x: fX,
@@ -50,7 +53,12 @@
 
 		public static function isInScreen(p1X: Number, p1Y: Number, layers: Array, _stage: Stage): Boolean {
 			var l: Sprite = layers[1];
-			var localPos: Point = l.localToGlobal(new Point(p1X, p1Y));
+			var pool:Pool = Pool.getInstance();
+			var point:Point = pool.get("point");
+			point.x = p1X;
+			point.y = p1Y;
+			var localPos: Point = l.localToGlobal(point);
+			pool.putBack(point, "point");
 			var w: Number = _stage.stageWidth;
 			var h: Number = _stage.stageHeight;
 			if (localPos.x > 0 && localPos.x < w && localPos.y > 0 && localPos.y < h) {

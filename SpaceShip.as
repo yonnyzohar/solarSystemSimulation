@@ -5,6 +5,7 @@
 
 	public class SpaceShip extends Entity{
 		
+		public static var COUNT:int = 0;
 		public var attachedPlanet:Planet;
 		private var moveObj:Object;
 		var distanceFromParent:Number;
@@ -18,7 +19,7 @@
 			super(_model, _stage);
 			
 			color = 0xffffff * Math.random();
-			radius = 20;
+			radius = 15;
 			speed = 5;
 			mc = new ShipMC();
 			mc.x = x;
@@ -27,6 +28,8 @@
 			mc.fireMC.visible = false;
 
 			findTarget(true);
+			name = "ship" + SpaceShip.COUNT;
+			SpaceShip.COUNT++;
 
 
 		}
@@ -101,6 +104,22 @@
 			var i;
 			var j;
 			gotMyAngle = false;
+			var vis = false;
+
+			if(Utils.isInScreen(x, y, model.layers, stage) ||
+				Utils.isInScreen(x + radius, y, model.layers, stage) ||
+				Utils.isInScreen(x - radius, y, model.layers, stage) ||
+				Utils.isInScreen(x, y + radius, model.layers, stage) ||
+				Utils.isInScreen(x, y - radius, model.layers, stage)
+				)
+			{
+				vis = true;
+				mc.visible = true;
+			}
+			else{
+				mc.visible = false;
+			}
+
 
 			if(moveObj)
 			{
@@ -136,9 +155,9 @@
 				var row:int = (x - Model.mapLeft) / Model.tileW;
 				var col:int = (y - Model.mapTop) / Model.tileH;
 				
-				for(var r:int = -1; r <= 1; r++)
+				for(var r:int = -2; r <= 2; r++)
 				{
-					for(var c:int = -1; c <= 1; c++)
+					for(var c:int = -2; c <= 2; c++)
 					{
 						var name:String = String(row+r) + "_" + String(col+c);
 						var block:Object = Model.partition[name];
@@ -161,7 +180,7 @@
 										var mag:Number = 100;
 										if(p.isMoon)
 										{
-											mag = 0.2;
+											mag = 1;
 										}
 										fX -= ((cos * speed)  / (d - rad)) * mag ;//
 										fY -= ((sin * speed)  / (d - rad)) * mag ; // 
@@ -211,7 +230,7 @@
 
 				y = nextY;
 				x = nextX;
-				if(smokeCounter % 4 == 0)
+				if(smokeCounter % 4 == 0 && vis)
 				{
 					var smoke:Smoke = Smoke(smokePool.get("smoke"));
 					smoke.gotoAndPlay(1);

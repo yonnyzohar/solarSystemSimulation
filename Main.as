@@ -9,9 +9,10 @@ package {
 
 	public class Main extends MovieClip {
 		var model: Model;
-		var lastPlanet: Planet = null;
+		var lastPlanet: Entity = null;
 		var yonny = true;
 		var spaceShips: Array = [];
+		var mouseCounter:int =0;
 
 		
 
@@ -55,7 +56,8 @@ package {
 			stage.addEventListener(MouseEvent.MOUSE_WHEEL, zooom);
 			
 			var pool:Pool = Pool.getInstance();
-			pool.init(1000, AngledBody, "angle");
+			pool.init(1000, AngledBody, "angle", true);
+			pool.init(100, Point, "point");
 
 			model.sun.draw();
 			var obj:Object = Utils.getMapSize(model);
@@ -69,20 +71,38 @@ package {
 			Model.tileW = Model.mapW / n;
 			Model.tileH = Model.mapH / n;
 
-			
-			
 			//_numElements : int, _CLS:Class, type:String
 			pool.init(50 * Model.numShips, Smoke, "smoke");
 			
-			
-
+			//place ships randomly in spots where they dont smash into planets
 			for(var i:int = 0; i < Model.numShips; i++)
 			{
 				var s:SpaceShip = new SpaceShip(model, stage);
-				s.x =  Model.mapW + Model.mapLeft;
-				s.y =  Model.mapH + Model.mapTop;
-				model.allPlanets.push(s);
-				spaceShips.push(s);
+				var found:Boolean = false;
+				while(!found)
+				{
+					var _x:Number = Math.random() * Model.mapW + Model.mapLeft;
+					var _y:Number = Math.random() * Model.mapH + Model.mapTop;
+					for(var j:int = 0; j < model.allPlanets.length; j++)
+					{
+						if(model.allPlanets[j] is Planet)
+						{
+							var p:Planet = Planet(model.allPlanets[j]);
+							var rad:Number = p.radius;
+							var d:Number = MathUtils.getDistance(_x, _y, p.x, p.y);
+							if(d > rad + s.radius)
+							{
+								s.x =  _x;
+								s.y =  _y;
+								model.allPlanets.push(s);
+								spaceShips.push(s);
+								found = true;
+								break;
+							}
+
+						}
+					}
+				}
 			}
 
 		}
@@ -90,13 +110,17 @@ package {
 		
 
 		function onDown(event: MouseEvent): void {
+			mouseCounter = 0;
 			var l: Sprite = model.layers[1];
 			//this is the offset in origin coords, at scale 1
 			model.offsetX = (stage.mouseX - l.x) / model.currZoom;
 			model.offsetY = (stage.mouseY - l.y) / model.currZoom;
 			model.mouseDown = true;
 			if (model.tweenTo) {
-				model.tweenTo.planet.showOrbit = false;
+				if(model.tweenTo.planet is Planet)
+				{
+					Planet(model.tweenTo.planet).showOrbit = false;
+				}
 			}
 
 			model.tweenTo = null;
@@ -110,26 +134,37 @@ package {
 
 		function zooom(event: MouseEvent): void {
 			var l: Sprite = model.layers[1];
+			var pool:Pool = Pool.getInstance();
+			var point:Point = pool.get("point");
+			point.x = stage.mouseX;
+			point.y = stage.mouseY;
 			//this is the mouse position at current scale inside 
-			var localPosPre: Point = l.globalToLocal(new Point(stage.mouseX, stage.mouseY));
+			var localPosPre: Point = l.globalToLocal(point);
+			pool.putBack(point, "point");
 			//drawCircle(localPosPre.x, localPosPre.y, 10, 0x00cc00);
+
+			/*
 			if (model.tweenTo) {
-				model.tweenTo.planet.showOrbit = false;
+				if(model.tweenTo.planet is Planet)
+				{
+					Planet(model.tweenTo.planet).showOrbit = false;
+				}
+				
 			}
-
-
-
 
 			model.tweenTo = null;
 			model.txt.text = "";
 			model.moonsTxt.text = "";
+			*/
+
+
 			var proceed: Boolean = true;
 			if (event.delta > 0) {
 				model.currZoom += model.zoomAmount;
 			} else if (event.delta < 0) {
 				model.currZoom -= model.zoomAmount;
-				if (model.currZoom <= 0.05) {
-					model.currZoom = 0.05;
+				if (model.currZoom <= 0.1) {
+					model.currZoom = 0.1;
 					proceed = false;
 				}
 			}
@@ -169,16 +204,29 @@ package {
 
 		///////////////////////////---- controls -----/////////
 		function onClick(event: MouseEvent): void {
+			if(mouseCounter > 5)
+			{
+				return;
+			}
 			var l: Sprite = model.layers[1];
-			var localPos: Point = l.globalToLocal(new Point(stage.mouseX, stage.mouseY));
-			var p: Planet = PlanetUtils.findNearestPlanet(model, localPos.x, localPos.y);
+			var pool:Pool = Pool.getInstance();
+			var point:Point = pool.get("point");
+			point.x = stage.mouseX;
+			point.y = stage.mouseY;
+			var localPos: Point = l.globalToLocal(point);
+			pool.putBack(point, "point");
+			var p: Entity = PlanetUtils.findNearestPlanet(model, localPos.x, localPos.y);
 			if (p) {
 				model.txt.text = p.name;
 				model.moonsTxt.text = "";
-				if (p.numMoons) {
-					model.moonsTxt.text = String(p.numMoons) + " Moons";
-				}
+				if(p is Planet)
+				{
+					if (Planet(p).numMoons) {
+						model.moonsTxt.text = String(Planet(p).numMoons) + " Moons";
+					}
 
+				}
+				
 				//spaceShip.moveTo(p);
 
 				Utils.setFollow(p, true, stage, model);
@@ -189,6 +237,7 @@ package {
 		function update(e: Event): void {
 			var i: int = 0;
 			var l: Sprite;
+			mouseCounter++;
 			PlanetUtils.createPartition(model, Model.mapLeft, Model.mapTop);
 
 			if (model.tweenTo != null) {
@@ -254,14 +303,24 @@ package {
 
 				} else {
 					var l: Sprite = model.layers[1];
-					var localPos: Point = l.globalToLocal(new Point(stage.mouseX, stage.mouseY));
-					var p: Planet = PlanetUtils.findNearestPlanet(model, localPos.x, localPos.y);
+					var pool:Pool = Pool.getInstance();
+					var point:Point = pool.get("point");
+					point.x = stage.mouseX;
+					point.y = stage.mouseY;
+					var localPos: Point = l.globalToLocal(point);
+					pool.putBack(point, "point");
+					var p: Entity = PlanetUtils.findNearestPlanet(model, localPos.x, localPos.y);
 					if (p && p != lastPlanet) {
 						model.txt.text = p.name;
 						model.moonsTxt.text = "";
-						if (p.numMoons) {
-							model.moonsTxt.text = String(p.numMoons) + " Moons";
+						if(p is Planet)
+						{
+							if (Planet(p).numMoons) {
+								model.moonsTxt.text = String(Planet(p).numMoons) + " Moons";
+							}
 						}
+						
+						
 					} else {
 						if (p == null && lastPlanet != null) {
 							model.txt.text = "";
@@ -276,29 +335,30 @@ package {
 
 			
 			
-			try {
-
-			model.g0.clear();
-			model.g05.lineStyle(0.1, 0x000000);
-			model.g05.clear();
-			model.g1.clear();
-			model.g1.lineStyle(0.1, 0x000000);
-
 			
-				for(var i:int = 0; i < spaceShips.length; i++)
-				{
-					var s:SpaceShip = spaceShips[i];
-					s.draw();
-				}
-				model.sun.draw();
-			} catch (e: Error) {
-				trace(e.message);
-				stage.removeEventListener(Event.ENTER_FRAME, update);
-			}
 		
 		if (yonny) {
 				//trace("");
-				yonny = false;
+				//yonny = false;
+				try {
+
+				model.g0.clear();
+				model.g05.lineStyle(0.1, 0x000000);
+				model.g05.clear();
+				model.g1.clear();
+				model.g1.lineStyle(0.1, 0x000000);
+
+				
+					for(var i:int = 0; i < spaceShips.length; i++)
+					{
+						var s:SpaceShip = spaceShips[i];
+						s.draw();
+					}
+					model.sun.draw();
+				} catch (e: Error) {
+					trace(e.message);
+					stage.removeEventListener(Event.ENTER_FRAME, update);
+				}
 
 			}
 

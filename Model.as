@@ -12,7 +12,7 @@
 		public static var mapLeft:int;
 		public static var mapTop:int;
 
-		public static var numShips:int = 15;
+		public static var numShips:int = 6;
 
 		public static var maxDistance = 1000000;
 
@@ -89,9 +89,9 @@
 			/*radius*/	50, 
 			/*color*/	0xffffff * Math.random(),
 			/*distanceFromParent*/	dist, 
-			/*angle*/	Math.random() * (Math.PI * 2), 
+			/*angle*/	0,//Math.random() * (Math.PI * 2), 
 			/*name*/	"earth",
-			/*numMoons*/1
+			/*numMoons*/5
 			);
 
 			dist += (earth.radius * 10);

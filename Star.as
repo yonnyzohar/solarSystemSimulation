@@ -49,12 +49,12 @@
 
 			//
 			gatherAllPlanetPositions(angles, model.allPlanets, true);
-			////trace("angles before manipulations",angles.length );
+			//////trace("angles before manipulations",angles.length );
 
 			var emptypSpaces = [];
 			//sort the array and fix it to contain the accurate gaps so none are overlapping
 			angles = addEntry1(angles, emptypSpaces);
-			////trace("angles after manipulations",angles.length );
+			//////trace("angles after manipulations",angles.length );
 
 			sendBeams(angles,  lightLineThickness,  false);
 
@@ -65,41 +65,24 @@
 
 		public function gatherAllPlanetPositions(angles: Array, allPlanets: Vector.<Entity> , topHeirarchy:Boolean = false): void {
 			var p: Entity;
-			////trace("gatherAllPlanetPositions",allPlanets.length );
+			//////trace("gatherAllPlanetPositions",allPlanets.length );
 			for (var j: int = 0; j < allPlanets.length; j++) {
 				p = Entity(allPlanets[j]);
-				////trace("checking", p.name);
+				//////trace("checking", p.name);
 
 				if (p == this) {
-					////trace("skipping", name);
+					//////trace("skipping", name);
 					continue;
 				}
-				//we dont want a moon appearing twice in the angles array
-				if(p is Planet && Planet(p).isMoon && topHeirarchy)
-				{
-					//continue;
-				}
 
-				//dont grab spaceships twice - find better way to do this
-				if(p is SpaceShip )
-				{
-					if (SpaceShip(p).gotMyAngle == false)
-					{
-						SpaceShip(p).gotMyAngle = true;
-					}
-					else{
-						continue;
-					}
-					
-				}
 
 				//go over all planets and get their angle to the sun
 				//get center angle, angle from left side and angle from right side
 				//we need to t figure out if they are blocking planets behind them
 				var centerAngleToSun: Number = MathUtils.fixAngle(MathUtils.getAngle(p.x, p.y, x, y));
-				////trace("shit",x, y, p.x, p.y);
+				//////trace("shit",x, y, p.x, p.y);
 				var distanceToSun: Number = MathUtils.getDistance(x, y, p.x, p.y);
-				////trace("distanceToSun",distanceToSun,"lightRad",lightRad);
+				//////trace("distanceToSun",distanceToSun,"lightRad",lightRad);
 				if (distanceToSun < lightRad) {
 					var leftAngle: Number = centerAngleToSun + (Math.PI / 2);
 					var leftPointX: Number = (Math.cos(leftAngle) * p.radius) + p.x;
@@ -122,23 +105,23 @@
 					}
 
 
-					//trace(leftAngleToSun, centerAngleToSun, rightAngleToSun);
+					////trace(leftAngleToSun, centerAngleToSun, rightAngleToSun);
 
-					var obj: AngledBody = pool.get("angle");//new AngledBody();
+					var obj: AngledBody = pool.get("angle");
 					obj.left =  Math.min(leftAngleToSun, rightAngleToSun);
 					obj.right= Math.max(leftAngleToSun, rightAngleToSun);
 					obj.dist= int(distanceToSun);
 					
 
 					//addEntry(obj, angles)
-					////trace("adding angle object");
+					//////trace("adding angle object");
 					angles.push(obj);
 				}
 
-				if (p is Planet && Planet(p).orbitingPlanets) {
-					////trace("has moons");
+				//if (p is Planet && Planet(p).orbitingPlanets) {
+					//////trace("has moons");
 					//gatherAllPlanetPositions(angles, Planet(p).orbitingPlanets, false);
-				}
+				//}
 			}
 		}
 
@@ -152,7 +135,7 @@
 		public function addEntry1(arr: Array, empties: Array): Array {
 			// this fort function sorts the array of planes angles into clusters. each cluster
 			//meaning planets are touching each other
-			//trace("addEntry1", arr.length );
+			////trace("addEntry1", arr.length );
 			arr.sortOn("left", Array.NUMERIC);
 			var i: int = 0;
 			//fill array with clusters
@@ -193,23 +176,23 @@
 			}
 			
 			//trace("before manipulations");
-			/*
+			
 			for ( h = 0; h < bigArr.length; h++)
 			{
 				var a: Array = bigArr[h];
 				for (i = 0; i < a.length; i++)
 				{
 					var pp:AngledBody = a[i];
-					//trace(h + " debug l",pp.left,"r", pp.right, "d",pp.dist);
+					////trace(h + " debug l",pp.left,"r", pp.right, "d",pp.dist);
 				}
-			}*/
+			}/**/
 
-			//trace("fixing pverboard");
+			////trace("fixing pverboard");
 			//see if we went overboard
 			//since 360 degress wraps around back to 0 we needs to make sure a planet that goes overboard from the last cluster
 			//does not interfiere with cluster 0
 			var smallestLeft = 0;
-			////trace("bigArr",bigArr.length);
+			//////trace("bigArr",bigArr.length);
 			var lastArr = bigArr[bigArr.length - 1];
 			
 			var lastElement = findBiggestRight(lastArr);
@@ -222,13 +205,13 @@
 					var element:AngledBody = bigArr[0][i];
 					//trace("	element l",element.left,"r", element.right, "d",element.dist);
 					if (element.left > r) {
-						//trace("		element left is bigger than last right");
+						////trace("		element left is bigger than last right");
 						break;
 					}
 					if (element.right < r) {
 						//trace("		element right is smaller than last right");
 						if (element.dist > lastElement.dist){
-							//trace("		element is farther");
+							////trace("		element is farther");
 							bigArr[0].splice(i, 1);
 							if (bigArr[0].length == 0) {
 								bigArr.shift();
@@ -239,7 +222,7 @@
 							var index = Math.max(i - 1, 0);
 							//trace("		element is closer");
 
-							 obj = pool.get("angle");//new AngledBody();
+							 obj = pool.get("angle");
 							obj.left =  smallestLeft;
 							obj.right= element.left;
 							obj.dist= lastElement.dist;
@@ -252,7 +235,7 @@
 						//current element is bigger than 
 						if (element.dist < lastElement.dist) {
 
-							obj = pool.get("angle");//new AngledBody();
+							obj = pool.get("angle");
 							obj.left =  smallestLeft;
 							obj.right= element.left;
 							obj.dist= lastElement.dist;
@@ -261,7 +244,7 @@
 							bigArr[0].unshift(obj);
 						} else {
 
-							obj = pool.get("angle");//new AngledBody();
+							obj = pool.get("angle");
 							obj.left =  smallestLeft;
 							obj.right= r;
 							obj.dist= lastElement.dist;
@@ -275,16 +258,16 @@
 				}
 
 			}
-			/*
+			
 			for ( h = 0; h < bigArr.length; h++)
 			{
 				var a: Array = bigArr[h];
 				for (i = 0; i < a.length; i++)
 				{
 					var pp:AngledBody = a[i];
-					trace(h + " debug l",pp.left,"r", pp.right, "d",pp.dist);
+					//trace(h + " debug l",pp.left,"r", pp.right, "d",pp.dist);
 				}
-			}*/
+			}/**/
 
 			//now that the list is sorted into clusters we can begin to sort out who is blocking whom
 			//we construct a new list which takes blockins into account
@@ -293,7 +276,7 @@
 			for (h = 0; h < bigArr.length; h++) {
 				tmp[h] = [];
 				var a: Array = bigArr[h];
-				obj = pool.get("angle");//new AngledBody();
+				obj = pool.get("angle");
 				obj.left =  a[0].left;
 				obj.right= a[0].right;
 				obj.dist = a[0].dist;
@@ -308,22 +291,22 @@
 						//trace("obj "+Utils.printObj(obj)+" is closer than currP "+Utils.printObj(currP));
 						//if obj ends before curr
 						if (obj.right < currP.right) {
-							//trace("	obj "+Utils.printObj(obj)+" right is less than currP right "+Utils.printObj(currP));
+							////trace("	obj "+Utils.printObj(obj)+" right is less than currP right "+Utils.printObj(currP));
 							obj.added = true;
 							var r = obj.right;
 							tmp[h].push(obj);
-							obj = pool.get("angle");//new AngledBody();
+							obj = pool.get("angle");
 							obj.left =  r;
 							obj.right= currP.right;
 							obj.dist= currP.dist;
-							//trace("1 "+Utils.printObj(obj));
+							////trace("1 "+Utils.printObj(obj));
 							
 						}
 						if (obj.right >= currP.right) {
 							//do nothing
 						}
 					} else {
-						//trace("obj "+Utils.printObj(obj)+" is farther than currP "+Utils.printObj(currP));
+						////trace("obj "+Utils.printObj(obj)+" is farther than currP "+Utils.printObj(currP));
 						//obj is farther away
 						//end obj at left 
 						if (obj.right < currP.right) {
@@ -332,9 +315,9 @@
 							obj.right = currP.left;
 							obj.added = true;
 							tmp[h].push(obj);
-							//trace("2 "+Utils.printObj(obj));
+							////trace("2 "+Utils.printObj(obj));
 
-							obj = pool.get("angle");//new AngledBody();
+							obj = pool.get("angle");
 							obj.left =  currP.left;
 							obj.right= currP.right;
 							obj.dist= currP.dist;
@@ -347,7 +330,7 @@
 							var l = obj.left;
 							var r = obj.right;
 							var d = obj.dist;
-							var orig:AngledBody =  pool.get("angle");//new AngledBody();
+							var orig:AngledBody =  pool.get("angle");
 							orig.left= l;
 							orig.right= r;
 							orig.dist= d;
@@ -355,9 +338,9 @@
 							obj.right = currP.left;
 							obj.added = true;
 							tmp[h].push(obj);
-							//trace("4 "+Utils.printObj(obj));
+							////trace("4 "+Utils.printObj(obj));
 
-							obj = pool.get("angle");//new AngledBody();
+							obj = pool.get("angle");
 							obj.left =  currP.left;
 							obj.right= currP.right;
 							obj.dist= currP.dist;
@@ -367,7 +350,7 @@
 							tmp[h].push(obj);
 							//trace("5 "+Utils.printObj(obj));
 
-							obj = pool.get("angle");//new AngledBody();
+							obj = pool.get("angle");
 							obj.left =  currP.right;
 							obj.right= orig.right;
 							obj.dist= orig.dist;
@@ -382,7 +365,7 @@
 				}
 			}
 
-			//trace("bob");
+			////trace("bob");
 			var res = [];
 			for (var b = 0; b < tmp.length; b++) {
 				var a: Array = tmp[b];
@@ -398,14 +381,14 @@
 			//now do empties
 			var o:AngledBody;
 			for (h = 0; h < tmp.length; h++) {
-				////trace("h",h);
+				//////trace("h",h);
 				var a: Array = tmp[h];
 				if (h == 0) 
 				{
 					if (a[0].left != 0) 
 					{
 
-						o = pool.get("angle");//new AngledBody();
+						o = pool.get("angle");
 						o.left  =  0;
 						o.right = a[0].left;
 						o.dist  = lightRad;
@@ -413,12 +396,12 @@
 						
 						empties.push(o);
 
-						o = pool.get("angle");//new AngledBody();
+						o = pool.get("angle");
 						o.left =  a[a.length - 1].right;
 						o.dist = lightRad;
 
 					} else {
-						o = pool.get("angle");//new AngledBody();
+						o = pool.get("angle");
 						o.left =  a[a.length - 1].right;
 						o.dist = lightRad;
 					}
@@ -429,13 +412,13 @@
 					o.right = a[0].left;
 					empties.push(o);
 
-					o = pool.get("angle");//new AngledBody();
+					o = pool.get("angle");
 					o.left =  a[a.length - 1].right;
 					o.dist = lightRad;
 				}
 
 				if (h == tmp.length - 1) {
-					////trace("added last one!");
+					//////trace("added last one!");
 					o.right = Math.PI * 2;
 					empties.push(o);
 				}
@@ -465,7 +448,7 @@
 			model.g0.lineStyle(0, color, 0.5); //per * 0.6
 
 			//first emit to all the planets
-			//trace(angles.length);
+			////trace(angles.length);
 			for (var h: int = 0; h < angles.length; h++) {
 				a = angles[h];
 				if (a) {
@@ -481,12 +464,12 @@
 					
 
 					if (isEmpty) {
-						////trace("empty left",a.left, "right",a.right);
+						//////trace("empty left",a.left, "right",a.right);
 
 						var pers: Array = [0.25, 0.5, 0.75];
 						for (var i = 0; i < pers.length; i++) {
 							var midAngle: Number = a.left + ((a.right - a.left) * pers[i]);
-							////trace(midAngle);
+							//////trace(midAngle);
 							cos = Math.cos(midAngle);
 							sin = Math.sin(midAngle);
 							dpX = x + cos * a.dist; //+ lightLineThickness)
