@@ -12,7 +12,7 @@
 		public static var mapLeft:int;
 		public static var mapTop:int;
 
-		public static var numShips:int = 6;
+		public static var numShips:int = 10;
 
 		public static var maxDistance = 1000000;
 
@@ -57,7 +57,7 @@
 
 		public function Model(_stage: Stage) {
 	
-			layers = [layerS, layerT, layer0, layer05, layer1, debugLayer];
+			layers = [layerS, debugLayer, layerT, layer0, layer05, layer1];
 			stage = _stage;
 			
 			var dist:int = 500;
@@ -186,12 +186,7 @@
 			sun.orbitingPlanets.push(saturn);
 			sun.orbitingPlanets.push(uranus);
 			sun.orbitingPlanets.push(neptune); 
-			
-			
+
 		}
-
-
-
 	}
-
 }

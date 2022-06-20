@@ -19,15 +19,15 @@
 			return instance;
 		}
 
-		public function init(_numElements : int, _CLS:Class, type:String, resetable:Boolean = false):void 
+		public function init(_numElements : int, _CLS:Class, type:String, fnctn:Function = null):void 
 		{
 			
 			dict[type] = {
 				curIndex : 0,
 				numElements : _numElements,
 				CLS : CLS,
-				pool : [],
-				resetable:resetable
+				pool : new Array(_numElements),
+				fnctn:fnctn
 			};
 
 			var CLS:Class = _CLS;
@@ -36,6 +36,10 @@
 			for(var i:int = 0; i < _numElements; i++)
 			{
 				pool[i] = new CLS();
+				if(fnctn != null) 
+				{
+					fnctn(pool[i]);
+				}
 			}
 		}
 
@@ -64,9 +68,9 @@
 				{
 					throw new Error("pool " + type + " limit exceeded " + obj.curIndex);
 				}
-				if(obj.resetable)
+				if(obj.fnctn)
 				{
-					e.reset();
+					obj.fnctn(e);
 				}
 				obj.curIndex++;
 				return e;

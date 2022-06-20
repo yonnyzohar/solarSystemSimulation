@@ -7,24 +7,29 @@
 			// constructor code
 		}
 
+
 	
 		public static function createPartition(model:Model, left:int, top:int):void
 		{	
 			Model.partition = {};
+			/*
 			for (var i:int = 0; i < model.allPlanets.length; i++) {
 				//if(model.allPlanets[i] is Planet)
 				{
 					var planet: Entity = Entity(model.allPlanets[i]);
-					var row:int = (planet.x - left) / Model.tileW;
-					var col:int = (planet.y - top) / Model.tileH;
+					var col:int = (planet.x - left )  / Model.tileW;// ;
+					var row:int = (planet.y - top)  / Model.tileH;// ;
+
 					var name:String = String(row) + "_" + String(col);
 					if(!Model.partition[name])
 					{
-						Model.partition[name] = {};
+						Model.partition[name] = {color : 0xffffff * Math.random(), row : row, col:col, numPlanets:0};
 					}
 					Model.partition[name][planet.name] = planet;
+					Model.partition[name].numPlanets++;
 				}
 			}
+			*/
 		}
 
 		public static function findNearestPlanet(model:Model, mx:Number, my:Number):Entity
@@ -38,12 +43,12 @@
 			var i: int = 0;
 
 
-			var row:int = (xPos - Model.mapLeft) / Model.tileW;
-			var col:int = (yPos - Model.mapTop) / Model.tileH;
+			var col:int = (xPos - Model.mapLeft) / Model.tileW;
+			var row:int = (yPos - Model.mapTop) / Model.tileH;
 			
-			for(var r:int = -2; r <= 2; r++)
+			for(var r:int = -1; r < 1; r++)
 			{
-				for(var c:int = -2; c <= 2; c++)
+				for(var c:int = -1; c < 1; c++)
 				{
 					var name:String = String(row+r) + "_" + String(col+c);
 					var block:Object = Model.partition[name];
@@ -51,9 +56,10 @@
 					{
 						for(var k:String in block)
 						{
-							var e:Entity = block[k];
-							//if(e is Planet)
+							
+							if(block[k] is Entity)
 							{
+								var e:Entity = block[k];
 								//p = Planet(e);
 								var d:Number = MathUtils.getDistance(xPos, yPos , e.x, e.y);
 								if (d < e.radius) {

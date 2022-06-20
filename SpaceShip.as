@@ -99,7 +99,8 @@
 
 		}
 
-		public function draw(parentObj: Planet = null): void {
+		override public function draw(parentObj: Planet = null): void {
+			super.draw(parentObj);
 			//model.g1.beginFill(color, 1);
 			var i;
 			var j;
@@ -152,23 +153,26 @@
 
 				
 
-				var row:int = (x - Model.mapLeft) / Model.tileW;
-				var col:int = (y - Model.mapTop) / Model.tileH;
+				var col:int = (x - Model.mapLeft) / Model.tileW;
+				var row:int = (y - Model.mapTop) / Model.tileH;
 				
-				for(var r:int = -2; r <= 2; r++)
+				for(var r:int = -2; r < 2; r++)
 				{
-					for(var c:int = -2; c <= 2; c++)
+					for(var c:int = -2; c < 2; c++)
 					{
 						var name:String = String(row+r) + "_" + String(col+c);
 						var block:Object = Model.partition[name];
 						if(block)
 						{
+							//model.dg.lineStyle(10, 0xffffff);
+							//model.dg.moveTo(Model.tileW * ((col+c)  - Model.mapLeft)  , Model.tileH * ((row+r)   - Model.mapTop) );
+							//model.dg.lineTo(Model.tileW * ((col+c+1) - Model.mapLeft),  Model.tileH * ((row+r+1) - Model.mapTop));
+
 							for(var k:String in block)
 							{
-								var e:Entity = block[k];
-								if(e is Planet)
+								if(block[k] is Planet)
 								{
-									var p:Planet = Planet(e);
+									var p:Planet = Planet(block[k]);
 									if(p != myP)
 									{
 										var rad:Number = p.radius;
@@ -218,7 +222,7 @@
 					}
 				}*/
 
-				//trace(num);
+				trace("checked " + num + " stars");
 
 				///////////////////////
 

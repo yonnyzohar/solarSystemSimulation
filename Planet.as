@@ -11,6 +11,7 @@
 		public var isMoon:Boolean = false;
 		
 		public var rings: Array;
+		//private var mc:PlanetMC ;
 
 		
 
@@ -18,7 +19,7 @@
 			
 			// constructor code
 			super(_model, _stage);
-			
+
 		}
 
 		public static function nextMoonIndex():int
@@ -35,6 +36,16 @@
 			name= _name;
 			numMoons = _numMoons;
 
+			/*
+			mc = new PlanetMC();
+			var scale:Number = radius / (mc.width/2);
+			trace("scale", scale);
+			mc.scaleX *= scale;
+			mc.scaleY *= scale;
+			model.layer1.addChild(mc);
+			mc.cacheAsBitmap = true;
+			mc.visible = false;
+*/
 			if(_numRings > 0)
 			{
 				rings = [];
@@ -48,12 +59,14 @@
 			speed = (Model.maxDistance / distanceFromParent) * 0.000001;
 		}
 
-		public function draw(parentObj: Planet = null): void {
-			model.g1.beginFill(color, 1);
+		override public function draw(parentObj: Planet = null): void {
+			super.draw(parentObj);
+			
 			var i;
 			var j;
 			if (parentObj) {
 
+				
 
 				var cos: Number = Math.cos(angle) * (distanceFromParent + parentObj.radius);
 				var sin: Number = Math.sin(angle) * (distanceFromParent + parentObj.radius);
@@ -62,6 +75,7 @@
 				//trace("pre draw", x,y,angle);
 				x = cos;
 				y = sin;
+		
 
 				//trace("draw", name, x,y, parentObj.x, parentObj.y, angle, parentObj.radius);
 
@@ -73,18 +87,21 @@
 					model.g05.drawCircle(parentObj.x, parentObj.y, distanceFromParent + parentObj.radius);
 					model.g05.endFill();
 				}
+				/**/
 
 
 			}
-			/**/
-			if (Utils.isInScreen(x, y, model.layers, stage) ||
+			
+			if (
+				Utils.isInScreen(x, y, model.layers, stage) ||
 				Utils.isInScreen(x + radius, y, model.layers, stage) ||
 				Utils.isInScreen(x - radius, y, model.layers, stage) ||
 				Utils.isInScreen(x, y + radius, model.layers, stage) ||
 				Utils.isInScreen(x, y - radius, model.layers, stage)
-				
 
 			) {
+				
+				model.g1.beginFill(color, 1);
 				model.g1.drawCircle(x, y, radius); // Draw the circle, assigning it a x position, y position, raidius.
 				model.g1.endFill();
 
@@ -112,7 +129,7 @@
 					p.draw(this);
 				}
 			}
-
+			/**/
 
 
 			

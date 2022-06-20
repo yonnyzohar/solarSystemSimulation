@@ -15,7 +15,6 @@
 			super.draw(parentObj);
 			pool.clear("angle");
 			handleLight();
-			//LightUtils.handleLight(this, model)
 		}
 
 		
@@ -31,7 +30,7 @@
 				for (var i = 0; i < light_rings; i++) {
 					var per = i / light_rings;
 					if (i != light_rings - 1) {
-						model.gt.beginFill(color,.05); //, .05
+						model.gt.beginFill(color,.05); //
 						model.gt.drawCircle(x, y, lightRad * per);
 						model.gt.endFill();
 					}
@@ -445,7 +444,7 @@
 			var baseLen: Number = radius;
 			var a: AngledBody;
 
-			model.g0.lineStyle(0, color, 0.5); //per * 0.6
+			//model.g0.lineStyle(0, color, 0.5); //per * 0.6
 
 			//first emit to all the planets
 			////trace(angles.length);

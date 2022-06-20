@@ -3,6 +3,7 @@
 	import flash.geom.*;
 
 	public class Utils {
+		private static var pool:Pool = Pool.getInstance();
 
 		public function Utils() {
 			// constructor code
@@ -53,7 +54,7 @@
 
 		public static function isInScreen(p1X: Number, p1Y: Number, layers: Array, _stage: Stage): Boolean {
 			var l: Sprite = layers[1];
-			var pool:Pool = Pool.getInstance();
+			
 			var point:Point = pool.get("point");
 			point.x = p1X;
 			point.y = p1Y;
@@ -76,7 +77,7 @@
 			return str;
 		}
 
-		public static function getMapSize(model:Model): Object {
+		public static function getMapSize(model:Model, center:Planet): Object {
 			var left: Number = 100000000;
 			var right: Number = -100000000;
 			var top: Number = 1000000000;
@@ -98,13 +99,25 @@
 					btm = e.y;
 				}
 			}
+
+			var lr:Number = Math.max(Math.abs(left), right);
+			var ud:Number = Math.max(Math.abs(top), btm);
+			var m:Number = Math.max(lr,ud );
+
+
+			var t:int = int(center.y - m);
+			var b:int = int(center.y + m);
+
+			var l:int = int(center.x - m);
+			var r:int = int(center.x + m);
+
 			return {
-				left: int(left),
-				right: int(right),
-				top: int(top),
-				btm: int(btm),
-				w: int(right - left),
-				h: int(btm - top)
+				left: l,
+				right: r,
+				top: t,
+				btm: b,
+				w: int(r - l),
+				h: int(b - t)
 			};
 		}
 
